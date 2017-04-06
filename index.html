@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>WebVR Workshop</title>
+        <title>Resonate Workshop</title>
         <meta charset="utf-8">
         <meta property="og:title" content="WebVR Workshop"/>
         <meta property="og:type" content="website"/>
         <meta property="og:image" content=""/>
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+        <!-- Origin Trial Token, feature = WebVR, origin = https://marpi.pl, expires = 2017-01-25 -->
+        <meta http-equiv="origin-trial" data-feature="WebVR" data-expires="2017-01-25" content="Aqz/we2su7wK6T3vhqDSVV27i62l/UmT8kvj4cETmGYFvWF51G1vY2ARdXA3HqPXWJU4f0JDQShoaIDLg9cGcAsAAABaeyJvcmlnaW4iOiJodHRwczovL21hcnBpLnBsOjQ0MyIsImZlYXR1cmUiOiJXZWJWUiIsImV4cGlyeSI6MTQ4NTM1MzY2NiwiaXNTdWJkb21haW4iOnRydWV9">
+
         <style>
             body {
                 margin: 0px;
@@ -25,9 +29,9 @@
         <script src="js/third-party/threejs/controls/VRControls.js"></script>
         <script src="js/third-party/threejs/controls/DeviceOrientationControls.js"></script>
         <script src="js/third-party/threejs/controls/OrbitControls.js"></script>
-        
+
         <script src="js/third-party/TweenMax.min.js"></script>
-        
+
         <script src="js/utils/helpers.js"></script>
 
         <script>
@@ -78,7 +82,7 @@
             }
 
             function setup() {
-                
+
                 // central object
 
                 var geometry = new THREE.TorusKnotGeometry(0.64, 0.25, 25, 6);
