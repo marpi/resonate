@@ -22,7 +22,10 @@
     <body>
 
         <script src="js/third-party/threejs/three.js"></script>
-        <script src="js/third-party/threejs/WebVR.js"></script>
+        <script src="js/third-party/threejs/vr/ViveController.js"></script>
+        <script src="js/third-party/threejs/vr/WebVR.js"></script>
+
+        <script src="js/third-party/threejs/loaders/OBJLoader.js"></script>
         <script src="js/third-party/threejs/effects/VREffect.js"></script>
         <script src="js/third-party/threejs/effects/StereoEffect.js"></script>
 
@@ -67,8 +70,19 @@
                 controls.autoRotate = true;
 
                 if (WEBVR.isAvailable() === true) {
-                    controls = new THREE.VRControls(camera);
-                    controls.standing = false;
+                    controller1 = new THREE.ViveController(0);
+                    controller1.standingMatrix = controls.getStandingMatrix();
+                    scene.add(controller1);
+                    controller2 = new THREE.ViveController(1);
+                    controller2.standingMatrix = controls.getStandingMatrix();
+                    scene.add(controller2);
+                    var loader = new THREE.OBJLoader();
+                    loader.setPath('assets/models/vive-controller/');
+                    loader.load('vr_controller_vive_1_5.obj', function (object) {
+                        var controller = object.children[ 0 ];
+                        controller1.add(object.clone());
+                        controller2.add(object.clone());
+                    });
 
                     renderer = new THREE.VREffect(renderer);
                     document.body.appendChild(WEBVR.getButton(renderer));
