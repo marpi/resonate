@@ -70,6 +70,9 @@
                 controls.autoRotate = true;
 
                 if (WEBVR.isAvailable() === true) {
+                    controls = new THREE.VRControls(camera);
+                    controls.standing = false;
+                    
                     controller1 = new THREE.ViveController(0);
                     controller1.standingMatrix = controls.getStandingMatrix();
                     scene.add(controller1);
