@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>WebVR Workshop</title>
+        <meta charset="utf-8">
+        <meta property="og:title" content="WebVR Workshop"/>
+        <meta property="og:type" content="website"/>
+        <meta property="og:image" content="https://worlds.marpi.pl/assets/image.jpg"/>
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <style>
+            body {
+                margin: 0px;
+                overflow: hidden;
+                background-color: #000000;
+            }
+        </style>
+    </head>
+    <body>
+
+        <script src="js/third-party/threejs/three.js"></script>
+        <script src="js/third-party/threejs/WebVR.js"></script>
+        <script src="js/third-party/threejs/effects/VREffect.js"></script>
+        <script src="js/third-party/threejs/effects/StereoEffect.js"></script>
+
+        <script src="js/third-party/threejs/controls/VRControls.js"></script>
+        <script src="js/third-party/threejs/controls/DeviceOrientationControls.js"></script>
+        <script src="js/third-party/threejs/controls/OrbitControls.js"></script>
+        
+        <script src="js/third-party/TweenMax.min.js"></script>
+        
+        <script src="js/utils/helpers.js"></script>
+
+        <script>
+            var camera, scene, renderer;
+            var mobile = false;
+
+            init();
+            setup();
+            render();
+
+            function init() {
+
+                // renderer
+
+                renderer = new THREE.WebGLRenderer({antialias: true});
+                renderer.setPixelRatio(window.devicePixelRatio);
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                document.body.appendChild(renderer.domElement);
+
+                // scene
+
+                scene = new THREE.Scene();
+
+                // camera
+
+                camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
+                camera.position.set(0, 0, 3);
+                camera.focalLength = camera.position.distanceTo(scene.position);
+
+                // controls
+
+                controls = new THREE.OrbitControls(camera);
+                controls.autoRotate = true;
+
+                if (WEBVR.isAvailable() === true) {
+                    controls = new THREE.VRControls(camera);
+                    controls.standing = false;
+
+                    renderer = new THREE.VREffect(renderer);
+                    document.body.appendChild(WEBVR.getButton(renderer));
+                }
+
+                // events
+
+                window.addEventListener('deviceorientation', setOrientationControls, true);
+                window.addEventListener('resize', onWindowResize, false);
+
+            }
+
+            function setup() {
+                
+                // central object
+
+                var geometry = new THREE.TorusKnotGeometry(0.64, 0.25, 25, 6);
+                var material = new THREE.MeshPhongMaterial({shading: THREE.FlatShading});
+                var object = new THREE.Mesh(geometry, material);
+                scene.add(object);
+
+                // cubes
+
+                var group = new THREE.Object3D();
+                for (var _x = -3; _x <= 3; _x++) {
+                    for (var _y = -3; _y <= 3; _y++) {
+                        for (var _z = -3; _z <= 3; _z++) {
+                            var geo = new THREE.BoxGeometry(.1, .1, .1, 1, 1, 1)
+                            var mesh = new THREE.Mesh(geo, material)
+                            mesh.position.set(_x, _y, _z)
+                            group.add(mesh);
+                        }
+                    }
+                }
+
+                // merge
+
+                var geom = new THREE.Geometry()
+                for (var i = 0; i < group.children.length; i++) {
+                    group.children[i].updateMatrix();
+                    geom.merge(group.children[i].geometry, group.children[i].matrix);
+                }
+                group = new THREE.Mesh(geom, material);
+                scene.add(group)
+
+                // light
+
+                var light = new THREE.DirectionalLight(0xffffff);
+                light.position.set(-1, 1.5, 0.5);
+                scene.add(light);
+            }
+
+            function render() {
+                requestAnimationFrame(render);
+
+                controls.update();
+
+                if (mobile) {
+                    camera.position.set(0, 0, 0)
+                    camera.translateZ(5);
+                }
+                renderer.render(scene, camera);
+
+            }
+
+        </script>
+    </body>
+</html>
