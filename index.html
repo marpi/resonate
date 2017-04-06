@@ -78,8 +78,9 @@
                     var loader = new THREE.OBJLoader();
                     loader.setPath('assets/models/vive-controller/');
                     loader.load('vr_controller_vive_1_5.obj', function (object) {
-
+                        
                         var controller = object.children[ 0 ];
+                        controller.material = new THREE.MeshPhongMaterial()
                         controller1.add(object.clone());
                         controller2.add(object.clone());
 
