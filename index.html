@@ -8,9 +8,6 @@
         <meta property="og:image" content=""/>
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
-        <!-- Origin Trial Token, feature = WebVR, origin = https://marpi.pl, expires = 2017-01-25 -->
-        <meta http-equiv="origin-trial" data-feature="WebVR" data-expires="2017-01-25" content="Aqz/we2su7wK6T3vhqDSVV27i62l/UmT8kvj4cETmGYFvWF51G1vY2ARdXA3HqPXWJU4f0JDQShoaIDLg9cGcAsAAABaeyJvcmlnaW4iOiJodHRwczovL21hcnBpLnBsOjQ0MyIsImZlYXR1cmUiOiJXZWJWUiIsImV4cGlyeSI6MTQ4NTM1MzY2NiwiaXNTdWJkb21haW4iOnRydWV9">
-
         <style>
             body {
                 margin: 0px;
@@ -150,14 +147,14 @@
             }
 
             function render() {
+                controls.update();
+                
                 if (vr) {
                     effect.requestAnimationFrame(render);
                     effect.render(scene, camera);
                     return;
                 }
                 requestAnimationFrame(render);
-
-                controls.update();
 
                 if (mobile) {
                     camera.position.set(0, 0, 0)
