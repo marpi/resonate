@@ -66,9 +66,6 @@
 
                 // controls
 
-                controls = new THREE.OrbitControls(camera);
-                controls.autoRotate = true;
-
                 if (WEBVR.isAvailable() === true) {
                     vr = true;
 
@@ -93,6 +90,9 @@
 
                     effect = new THREE.VREffect(renderer);
                     document.body.appendChild(WEBVR.getButton(effect));
+                } else {
+                    controls = new THREE.OrbitControls(camera);
+                    controls.autoRotate = true;
                 }
 
                 // events
@@ -152,9 +152,9 @@
             function render() {
                 if (vr) {
                     effect.requestAnimationFrame(render);
-                    effect.render(scene,camera);
+                    effect.render(scene, camera);
                     return;
-                }  
+                }
                 requestAnimationFrame(render);
 
                 controls.update();
