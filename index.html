@@ -151,7 +151,7 @@
 
             function render() {
                 if (vr) {
-                    renderer.requestAnimationFrame(render);
+                    effect.requestAnimationFrame(render);
                     effect.render(scene,camera);
                     return;
                 }  
