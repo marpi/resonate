@@ -40,6 +40,7 @@
         <script>
             var camera, scene, renderer;
             var mobile = false;
+            var vr = false;
 
             init();
             setup();
@@ -70,9 +71,11 @@
                 controls.autoRotate = true;
 
                 if (WEBVR.isAvailable() === true) {
+                    vr = true;
+
                     controls = new THREE.VRControls(camera);
                     controls.standing = false;
-                    
+
                     controller1 = new THREE.ViveController(0);
                     controller1.standingMatrix = controls.getStandingMatrix();
                     scene.add(controller1);
@@ -94,6 +97,15 @@
                 // events
 
                 window.addEventListener('deviceorientation', setOrientationControls, true);
+
+
+                window.addEventListener('vrdisplaypresentchange', function (event) {
+
+                    if (renderer.isPresenting) {
+
+                    }
+
+                }, false);
                 window.addEventListener('resize', onWindowResize, false);
 
             }
@@ -139,7 +151,11 @@
             }
 
             function render() {
-                requestAnimationFrame(render);
+                if (vr) {
+                    renderer.requestAnimationFrame(animate);
+                } else {
+                    requestAnimationFrame(render);
+                }
 
                 controls.update();
 
