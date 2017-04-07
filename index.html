@@ -36,7 +36,7 @@
         <script src="js/utils/helpers.js"></script>
 
         <script>
-            var camera, scene, renderer, effect, controls;
+            var camera, scene, renderer, effect, controls, vrControls;
             var controller1, controller2;
             var mobile = false;
             var vr = false;
@@ -116,9 +116,9 @@
             }
 
             function render() {
-                controls.update();
 
                 if (vr) {
+                    vrControls.update();
                     controller1.update();
                     controller2.update();
                     effect.requestAnimationFrame(render);
@@ -126,7 +126,8 @@
                     return;
                 }
                 requestAnimationFrame(render);
-
+                
+                controls.update();
                 if (mobile) {
                     camera.position.set(0, 0, 0)
                     camera.translateZ(5);

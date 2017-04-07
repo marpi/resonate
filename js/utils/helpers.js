@@ -3,8 +3,8 @@ function addEvents() {
     if (WEBVR.isAvailable() === true) {
         vr = true;
 
-        controls = new THREE.VRControls(camera);
-        controls.standing = true;
+        vrControls = new THREE.VRControls(camera);
+        vrControls.standing = true;
 
         controller1 = new THREE.ViveController(0);
         controller1.standingMatrix = controls.getStandingMatrix();
