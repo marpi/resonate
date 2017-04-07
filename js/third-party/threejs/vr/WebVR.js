@@ -85,6 +85,7 @@ var WEBVR = {
 		button.textContent = 'ENTER VR';
 		button.onclick = function() {
                     
+                        toggleVR(!effect.isPresenting);
 			effect.isPresenting ? effect.exitPresent() : effect.requestPresent();
                         
 
@@ -93,7 +94,6 @@ var WEBVR = {
 		window.addEventListener( 'vrdisplaypresentchange', function ( event ) {
 
 			button.textContent = effect.isPresenting ? 'EXIT VR' : 'ENTER VR';
-                        toggleVR = effect.isPresenting;
 
 		}, false );
 
