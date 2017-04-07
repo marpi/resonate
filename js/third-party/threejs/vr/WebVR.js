@@ -88,7 +88,6 @@ var WEBVR = {
                         toggleVR(!effect.isPresenting);
 			effect.isPresenting ? effect.exitPresent() : effect.requestPresent();
                         
-
 		};
 
 		window.addEventListener( 'vrdisplaypresentchange', function ( event ) {
