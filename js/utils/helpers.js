@@ -1,3 +1,39 @@
+function addEvents() {
+
+    if (WEBVR.isAvailable() === true) {
+        vr = true;
+
+        controls = new THREE.VRControls(camera);
+        controls.standing = true;
+
+        controller1 = new THREE.ViveController(0);
+        controller1.standingMatrix = controls.getStandingMatrix();
+        scene.add(controller1);
+        controller2 = new THREE.ViveController(1);
+        controller2.standingMatrix = controls.getStandingMatrix();
+        scene.add(controller2);
+        var loader = new THREE.OBJLoader();
+        loader.setPath('assets/models/vive-controller/');
+        loader.load('vr_controller_vive_1_5.obj', function (object) {
+
+            var controller = object.children[ 0 ];
+            controller.material = new THREE.MeshPhongMaterial()
+            controller1.add(object.clone());
+            controller2.add(object.clone());
+
+        });
+
+        effect = new THREE.VREffect(renderer);
+        document.body.appendChild(WEBVR.getButton(effect));
+    }
+
+    window.addEventListener('resize', onWindowResize, false);
+    window.addEventListener('deviceorientation', setOrientationControls, true);
+    window.addEventListener('vrdisplaypresentchange', function (event) {
+        vr = renderer.isPresenting
+    }, false);
+}
+
 function setOrientationControls(e) {
     if (!e.alpha) {
         return;
@@ -141,18 +177,21 @@ function getCubeMap(i) {
 /*
  * 
  
-                var ambientLight = new THREE.AmbientLight(0x999999);
-                scene.add(ambientLight);
+ var ambientLight = new THREE.AmbientLight(0x999999);
+ scene.add(ambientLight);
  
  *  
  */
 
 /*
  * 
-var texture = new THREE.TextureLoader().load("textures/image2.jpg");
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set(1, 1);
-        
+ var texture = new THREE.TextureLoader().load("textures/image2.jpg");
+ texture.wrapS = THREE.RepeatWrapping;
+ texture.wrapT = THREE.RepeatWrapping;
+ texture.repeat.set(1, 1);
+ 
  *  
  */
+
+
+//var s = noise.simplex3(_x, _y, _z);

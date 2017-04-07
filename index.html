@@ -31,6 +31,7 @@
         <script src="js/third-party/threejs/controls/OrbitControls.js"></script>
 
         <script src="js/third-party/TweenMax.min.js"></script>
+        <script src="js/third-party/perlin.js"></script>
 
         <script src="js/utils/helpers.js"></script>
 
@@ -63,47 +64,11 @@
 
                 // controls
 
-                if (WEBVR.isAvailable() === true) {
-                    vr = true;
-
-                    controls = new THREE.VRControls(camera);
-                    controls.standing = true;
-
-                    controller1 = new THREE.ViveController(0);
-                    controller1.standingMatrix = controls.getStandingMatrix();
-                    scene.add(controller1);
-                    controller2 = new THREE.ViveController(1);
-                    controller2.standingMatrix = controls.getStandingMatrix();
-                    scene.add(controller2);
-                    var loader = new THREE.OBJLoader();
-                    loader.setPath('assets/models/vive-controller/');
-                    loader.load('vr_controller_vive_1_5.obj', function (object) {
-                        
-                        var controller = object.children[ 0 ];
-                        controller.material = new THREE.MeshPhongMaterial()
-                        controller1.add(object.clone());
-                        controller2.add(object.clone());
-
-                    });
-
-                    effect = new THREE.VREffect(renderer);
-                    document.body.appendChild(WEBVR.getButton(effect));
-                } else {
-                    controls = new THREE.OrbitControls(camera);
-                    controls.autoRotate = true;
-                }
+                controls = new THREE.OrbitControls(camera);
+                controls.autoRotate = true;
 
                 // events
-
-                window.addEventListener('deviceorientation', setOrientationControls, true);
-                window.addEventListener('vrdisplaypresentchange', function (event) {
-
-                    if (renderer.isPresenting) {
-
-                    }
-
-                }, false);
-                window.addEventListener('resize', onWindowResize, false);
+                addEvents()
 
             }
 
@@ -112,16 +77,17 @@
                 // central object
 
                 var geometry = new THREE.TorusKnotGeometry(0.64, 0.25, 25, 6);
-                var material = new THREE.MeshPhongMaterial({shading: THREE.FlatShading});
+                var material = new THREE.MeshPhongMaterial({shading: THREE.FlatShading, side: THREE.DoubleSide});
                 var object = new THREE.Mesh(geometry, material);
                 scene.add(object);
 
-                // cubes
+                // cubes 
 
                 var group = new THREE.Object3D();
-                for (var _x = -3; _x <= 3; _x++) {
-                    for (var _y = -3; _y <= 3; _y++) {
-                        for (var _z = -3; _z <= 3; _z++) {
+                var side = 3
+                for (var _x = -side; _x <= side; _x++) {
+                    for (var _y = -side; _y <= side; _y++) {
+                        for (var _z = -side; _z <= side; _z++) {
                             var geo = new THREE.BoxGeometry(.1, .1, .1, 1, 1, 1)
                             var mesh = new THREE.Mesh(geo, material)
                             mesh.position.set(_x, _y, _z)
@@ -149,7 +115,7 @@
 
             function render() {
                 controls.update();
-                
+
                 if (vr) {
                     effect.requestAnimationFrame(render);
                     effect.render(scene, camera);
