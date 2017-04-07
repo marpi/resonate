@@ -36,7 +36,8 @@
         <script src="js/utils/helpers.js"></script>
 
         <script>
-            var camera, scene, renderer, effect;
+            var camera, scene, renderer, effect, controls;
+            var controller1, controller2;
             var mobile = false;
             var vr = false;
 
@@ -68,7 +69,8 @@
                 controls.autoRotate = true;
 
                 // events
-                addEvents()
+
+                addEvents();
 
             }
 
@@ -117,6 +119,8 @@
                 controls.update();
 
                 if (vr) {
+                    controller1.update();
+                    controller2.update();
                     effect.requestAnimationFrame(render);
                     effect.render(scene, camera);
                     return;
