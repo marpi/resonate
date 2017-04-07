@@ -65,7 +65,7 @@ var WEBVR = {
 
 	},
 
-	getButton: function ( effect ) {
+	getButton: function ( effect, toggleVR ) {
 
 		var button = document.createElement( 'button' );
 		button.style.position = 'absolute';
@@ -84,8 +84,10 @@ var WEBVR = {
 		button.style.zIndex = '999';
 		button.textContent = 'ENTER VR';
 		button.onclick = function() {
-
+                    
+                        toggleVR = !effect.isPresenting;
 			effect.isPresenting ? effect.exitPresent() : effect.requestPresent();
+                        
 
 		};
 
