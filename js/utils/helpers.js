@@ -7,10 +7,10 @@ function addEvents() {
         vrControls.standing = true;
 
         controller1 = new THREE.ViveController(0);
-        controller1.standingMatrix = controls.getStandingMatrix();
+        controller1.standingMatrix = vrControls.getStandingMatrix();
         scene.add(controller1);
         controller2 = new THREE.ViveController(1);
-        controller2.standingMatrix = controls.getStandingMatrix();
+        controller2.standingMatrix = vrControls.getStandingMatrix();
         scene.add(controller2);
         var loader = new THREE.OBJLoader();
         loader.setPath('assets/models/vive-controller/');
