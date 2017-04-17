@@ -15,7 +15,7 @@ function addEvents() {
         loader.load('vr_controller_vive_1_5.obj', function (object) {
 
             var controller = object.children[ 0 ];
-            controller.material = new THREE.MeshPhongMaterial({color:0xFFFFFF})
+            controller.material = new THREE.MeshPhongMaterial({color: 0xFFFFFF})
             controller1.add(object.clone());
             controller2.add(object.clone());
 
@@ -32,7 +32,7 @@ function addEvents() {
     }, false);
 }
 
-function toggleVR(enabled){
+function toggleVR(enabled) {
     vr = enabled;
 }
 
@@ -86,7 +86,6 @@ function getCubeMap(i) {
 
     var envMaps = [
         {file: "sunset.jpg", size: 512},
-        {file: "workshop_cube.jpg", size: 1024},
         {file: "Above_The_Sea.jpg", size: 1024},
         {file: "bluecloud.jpg", size: 1024},
         {file: "fog.jpg", size: 512},
@@ -197,3 +196,16 @@ function getCubeMap(i) {
 
 
 //var s = noise.simplex3(_x, _y, _z);
+
+/*
+ * 
+
+    odeo = new Odeo({});
+    odeo.stopUsingMicrophone();
+    odeo.playMedia('assets/sound/jewel.ogg')
+
+    odeo.update();
+    console.log(odeo.frequencyData)
+
+ *
+ */

@@ -3,11 +3,11 @@
     <head>
         <title>Resonate Workshop</title>
         <meta charset="utf-8">
-        <meta property="og:title" content="WebVR Workshop"/>
+        <meta property="og:title" content="Resonate Workshop"/>
         <meta property="og:type" content="website"/>
         <meta property="og:image" content=""/>
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-        
+
         <!-- Origin Trial Token, feature = WebVR, origin = https://marpi.pl, expires = 2017-05-19 -->
         <meta http-equiv="origin-trial" data-feature="WebVR" data-expires="2017-05-19" content="AutAQvhPMXcJN2dfVzKebCb5nTzFtjcfJnUz4tqiNbly0tBNptQccZVEOatEEOK+O483IwJMdTjLqJzE1CINIQkAAABaeyJvcmlnaW4iOiJodHRwczovL21hcnBpLnBsOjQ0MyIsImZlYXR1cmUiOiJXZWJWUiIsImV4cGlyeSI6MTQ5NTIwMzE3NywiaXNTdWJkb21haW4iOnRydWV9">
 
@@ -34,6 +34,7 @@
         <script src="js/third-party/threejs/controls/OrbitControls.js"></script>
 
         <script src="js/third-party/TweenMax.min.js"></script>
+        <script src="js/third-party/Odeo.js"></script>
         <script src="js/third-party/perlin.js"></script>
 
         <script src="js/utils/helpers.js"></script>
@@ -119,6 +120,8 @@
             }
 
             function render() {
+                
+                // vr
 
                 if (vr) {
                     vrControls.update();
@@ -128,8 +131,11 @@
                     effect.render(scene, camera);
                     return;
                 }
-                requestAnimationFrame(render);
                 
+                // everything else
+                
+                requestAnimationFrame(render);
+
                 controls.update();
                 if (mobile) {
                     camera.position.set(0, 0, 0)
