@@ -1,5 +1,4 @@
 ## Resonate workshop
-Building generative VR worlds
 
 [![Building generative VR worlds](/cover.png "Building generative VR worlds")](http://resonate.io/2017/workshop/building-generative-vr-worlds/)
 
