@@ -23,6 +23,8 @@ For example, for /public/adam/ - [https://classes.marpi.pl/resonate/public/adam/
 
 Just make sure you edit only your personal project :)
 
-See you soon.
-Marpi
+See you soon  
+
+Marpi  
+
 [marpi.pl](https://marpi.pl)
