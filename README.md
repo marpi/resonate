@@ -2,9 +2,7 @@
 
 [![Building generative VR worlds](/title.png "Building generative VR worlds")](http://resonate.io/2017/workshop/building-generative-vr-worlds/)
 
-[http://resonate.io/2017/workshop/building-generative-vr-worlds/](http://resonate.io/2017/workshop/building-generative-vr-worlds/)
-
-How to run code locally
+How to run
 -------
 
 In order to see your project on your own computer you have to run "localhost":
