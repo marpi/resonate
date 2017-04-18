@@ -2,3 +2,21 @@
 Building generative VR worlds
 
 [http://resonate.io/2017/workshop/building-generative-vr-worlds/](http://resonate.io/2017/workshop/building-generative-vr-worlds/)
+
+How to run code locally
+-------
+
+Windows: You can use [WAMP](http://www.wampserver.com/en/)
+OSX: In terminal, go to your public/name/ folder and type: php -S 0.0.0.0:8000
+Linux: In terminal, go to your public/name/ folder and type: python -m SimpleHTTPServer
+Otherwise, you can try running Chrome with the flags --disable-web-security
+
+Setup
+-------
+
+Everything we're working on will be automatically deployed online here: [https://classes.marpi.pl/resonate/](https://classes.marpi.pl/resonate/)
+For everyone at the workshop, there is a folder with your name, in /public/ directory. After you point the server from previous step to it, you'll be able to see your project. After you commit any changes during class, the copy will appear on the main server, that will let you test it on your phone. For example, for /public/adam/ - [https://classes.marpi.pl/resonate/](https://classes.marpi.pl/resonate/public/adam/). Make sure you edit only your personal project :)
+
+See you soon.
+Marpi
+[marpi.pl](https://marpi.pl)
