@@ -44,10 +44,57 @@
             var controller1, controller2;
             var mobile = false;
             var vr = false;
+            var object,group;
+
+            var clock ;
+            var rings;
+
+            var p_grid,p_group;
 
             init();
             setup();
             render();
+
+            var effector;
+
+            var particles;
+            //----------------||Class for particles
+            function Vtx (p,t,s){
+                this.p = p;
+                this.t = t;
+
+                this.v = new THREE.Vector3(0,0,0);
+                this.a = new THREE.Vector3(0,0,0);
+
+                this.decay = 0.4;
+
+                this.s = s;
+                this.d = 0.0;
+
+                this.update = function() {
+                    //this.a  = (this.t-this.p) * 0.1;
+                    // this.a = this.t.sub( this.p );
+                    var c = new THREE.Vector3();
+                    c.subVectors( this.t ,this.p);
+                    c.multiplyScalar(0.05);
+                    this.a = c;
+
+                    this.v.add(this.a);
+                    this.p.add(this.v);
+                    this.v.multiplyScalar(this.decay);
+
+
+                    // this.s = ((this.s-this.d) * this.decay) + this.d;
+                    this.s *=   this.decay;
+
+
+
+
+                    };
+            };
+            //------------------------------------||
+
+            var vtx;
 
             function init() {
 
@@ -76,55 +123,211 @@
 
                 addEvents();
 
+                clock = new THREE.Clock(true);
+
+                var loader = new THREE.OBJLoader();
+                // loader.setPath("/assets");
+
+                // loader.load('Rings_01.obj'),    function ( obj ) {
+                //     //add the loaded object to the scene
+                //     scene.add( obj );
+                // }//, function (object) {
+                //}
+                //     // var material = new THREE.MeshBasicMaterial({envMap: getCubeMap(0)});
+                //     var material = new THREE.MeshPhongMaterial({shading: THREE.FlatShading, side: THREE.DoubleSide});
+                //     object.children[0].material=material
+                //     scene.add(object)
+                // }
+
+                // vtx = new Vtx();
+                // console.log("VTX : ", vtx);
+                loader.load(
+                    // resource URL
+                    "assets/models/Rings_01.obj",
+
+                    // pass the loaded data to the onLoad function.
+                    //Here it is assumed to be an object
+                    function ( obj ) {
+                        //add the loaded object to the scene
+                        obj.scale.x = 0.0001
+                        obj.scale.y = 0.0001
+                        obj.scale.z = 0.0001
+                        obj.position.y = 10;// = new THREE.Vector3(0,100,0);
+                        obj.rotation.x = 1.5;
+
+                        scene.add( obj );
+                    },
+
+                    // Function called when download progresses
+                    function ( xhr ) {
+                        console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+                    },
+
+                    // Function called when download errors
+                    function ( xhr ) {
+                        console.error( 'An error happened' );
+                    }
+                );
             }
+
+
 
             function setup() {
 
                 // central object
 
-                var geometry = new THREE.TorusKnotGeometry(0.64, 0.25, 25, 6);
+                var geometry = new THREE.TorusKnotGeometry(0.64, 0.25, 120, 6);
+                var tet      = new THREE.TetrahedronGeometry(0.5, 0);
                 var material = new THREE.MeshPhongMaterial({shading: THREE.FlatShading, side: THREE.DoubleSide});
-                var object = new THREE.Mesh(geometry, material);
+                object = new THREE.Mesh(tet, material);
                 scene.add(object);
+
+
+                var tet2 = new THREE.TetrahedronGeometry(0.5,3);
+                effector = new THREE.Mesh(tet2, material);
+                scene.add(effector);
 
                 // cubes 
 
-                var group = new THREE.Object3D();
-                var side = 3
+                group = new THREE.Object3D();
+                // var side = 9
+                // for (var _x = -side; _x <= side; _x++) {
+                //     for (var _y = -side; _y <= side; _y++) {
+                //         for (var _z = -side; _z <= side; _z++) {
+                //             // var geo = new THREE.BoxGeometry(.1, .1, .1, 1, 1, 1)
+                //             var geo = new THREE.BoxGeometry(Math.random()*0.2, Math.random()*2.0, Math.random()*0.2, 1, 1, 1)
+                //             var mesh = new THREE.Mesh(geo, material)
+                //             mesh.position.set(_x, _y, _z)
+                //             group.add(mesh);
+                //         }
+                //     }
+                // }
+
+                // merge
+
+                // var geom = new THREE.Geometry()
+                // for (var i = 0; i < group.children.length; i++) {
+                //     group.children[i].updateMatrix();
+                //     geom.merge(group.children[i].geometry, group.children[i].matrix);
+                // }
+                // group = new THREE.Mesh(geom, material);
+                // scene.add(group)
+
+
+                // Object group
+                p_group = new THREE.Object3D();
+
+                var side = 20   
+                var size = 5.0/side;
+                particles = [];
                 for (var _x = -side; _x <= side; _x++) {
-                    for (var _y = -side; _y <= side; _y++) {
+                    // for (var _y = -side; _y <= side; _y++) {
+                    for (var _y = 0; _y <= 0; _y++) {
                         for (var _z = -side; _z <= side; _z++) {
-                            var geo = new THREE.BoxGeometry(.1, .1, .1, 1, 1, 1)
+                            // var geo = new THREE.BoxGeometry(.1, .1, .1, 1, 1, 1)
+                            var geo = new THREE.BoxGeometry(size,size,size, 1, 1, 1)
                             var mesh = new THREE.Mesh(geo, material)
                             mesh.position.set(_x, _y, _z)
-                            group.add(mesh);
+                            p_group.add(mesh);
+                            var t = new THREE.Vector3(_x,_y,_z);
+                            var p = new THREE.Vector3(0,100,0);
+                            p.add(t);
+                            particles.push(new Vtx(p,t,1.0));
+                            
                         }
                     }
                 }
 
-                // merge
-
-                var geom = new THREE.Geometry()
-                for (var i = 0; i < group.children.length; i++) {
-                    group.children[i].updateMatrix();
-                    geom.merge(group.children[i].geometry, group.children[i].matrix);
-                }
-                group = new THREE.Mesh(geom, material);
-                scene.add(group)
+                // var geom = new THREE.Geometry()
+                // for (var i = 0; i < group.children.length; i++) {
+                //     group.children[i].updateMatrix();
+                //     geom.merge(group.children[i].geometry, group.children[i].matrix);
+                // }
+                // group = new THREE.Mesh(geom, material);
+                scene.add(p_group);
 
                 // light
 
-                var light = new THREE.DirectionalLight(0xffffff);
+                var light = new THREE.DirectionalLight(0xff0070);
                 light.position.set(-1, 1.5, 0.5);
                 scene.add(light);
+
+                var light1 = new THREE.DirectionalLight(0xffff70);
+                light1.position.set(1, 2.5, 0.5);
+                scene.add(light1);
+
+
+                var light2 = new THREE.DirectionalLight(0x60fff0);
+                light2.position.set(1, -2, 0.5);
+                scene.add(light2);
             }
 
             function render() {
                 
                 // vr
 
+                var t = clock.getElapsedTime();
+
+                // var rot = delta % (Math.pi*2.0);
+
+                var cnt = p_group.children.length;
+                
+                effector.position.set(Math.sin(t) * 20,0,Math.cos(t)*20);
+
+                var ep = new THREE.Vector3();
+
+                ep = effector.position;
+
+                var step;
+                for (var i = 0; i < cnt; i++) {
+                    var node = p_group.children[i];
+                    // node.rotation.y += 0.1;
+                    var p = node.position;
+                    var x = p.x;
+                    var y = p.y;
+                    var z = p.z; 
+                    var s = noise.simplex3(x+t/5, y/5, z/5);
+
+
+
+                    if( ep.distanceTo( particles[i].p ) < 10){
+                        particles[i].s = 10.0;
+                    }
+
+                    particles[i].update();
+
+                    var np = particles[i].p;
+                    node.position.set(np.x,np.y,np.z);
+
+                    node.scale.x =  1.0 + particles[i].s;
+                    node.scale.y =  1.0 + particles[i].s;
+                    node.scale.z =  1.0 + particles[i].s;
+
+
+
+                    if( ep.distanceTo( np ) < 10){
+
+                        particles[i].p = np.add(new THREE.Vector3(0,2,0));
+
+                    }
+
+                    // node.position.set(node.position.clone().add(new THREE.Vector3(0,s,0) ));
+                    // console.log(np);
+                    // p_group.children[i].position.y += s;
+                    // p_group.children[i].scale.y = s*10;
+                    // p_group.children[i].scale.y = vtx.sz;
+                    // step = ((Math.pi*2.0)/ cnt ) * 
+                }
+                // console.log(particles[0].s);
+                
+                // }
+
+
+
+                // group.rotation.y += 0.01;
+
                 if (vr) {
-                    vrControls.update();
+                    VRControls.update();
                     controller1.update();
                     controller2.update();
                     effect.requestAnimationFrame(render);
