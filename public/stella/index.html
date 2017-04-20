@@ -1,150 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Resonate Workshop</title>
-        <meta charset="utf-8">
-        <meta property="og:title" content="Resonate Workshop"/>
-        <meta property="og:type" content="website"/>
-        <meta property="og:image" content=""/>
-        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<head>
+  <title>Resonate Workshop</title>
+  <meta charset="utf-8">
+  <meta property="og:title" content="Resonate Workshop"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:image" content=""/>
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
-        <!-- Origin Trial Token, feature = WebVR, origin = https://marpi.pl, expires = 2017-05-19 -->
-        <meta http-equiv="origin-trial" data-feature="WebVR" data-expires="2017-05-19" content="AutAQvhPMXcJN2dfVzKebCb5nTzFtjcfJnUz4tqiNbly0tBNptQccZVEOatEEOK+O483IwJMdTjLqJzE1CINIQkAAABaeyJvcmlnaW4iOiJodHRwczovL21hcnBpLnBsOjQ0MyIsImZlYXR1cmUiOiJXZWJWUiIsImV4cGlyeSI6MTQ5NTIwMzE3NywiaXNTdWJkb21haW4iOnRydWV9">
+  <!-- Origin Trial Token, feature = WebVR, origin = https://marpi.pl, expires = 2017-05-19 -->
+  <meta http-equiv="origin-trial" data-feature="WebVR" data-expires="2017-05-19" content="AutAQvhPMXcJN2dfVzKebCb5nTzFtjcfJnUz4tqiNbly0tBNptQccZVEOatEEOK+O483IwJMdTjLqJzE1CINIQkAAABaeyJvcmlnaW4iOiJodHRwczovL21hcnBpLnBsOjQ0MyIsImZlYXR1cmUiOiJXZWJWUiIsImV4cGlyeSI6MTQ5NTIwMzE3NywiaXNTdWJkb21haW4iOnRydWV9">
 
-        <style>
-            body {
-                margin: 0px;
-                overflow: hidden;
-                background-color: #000000;
-            }
-        </style>
-    </head>
-    <body>
+  <style>
+  body {
+    margin: 0px;
+    overflow: hidden;
+    background-color: #000000;
+  }
+  </style>
+</head>
+<body>
 
-        <script src="js/third-party/threejs/three.js"></script>
-        <script src="js/third-party/threejs/vr/ViveController.js"></script>
-        <script src="js/third-party/threejs/vr/WebVR.js"></script>
+  <script src="js/third-party/threejs/three.js"></script>
+  <script src="js/third-party/threejs/vr/ViveController.js"></script>
+  <script src="js/third-party/threejs/vr/WebVR.js"></script>
 
-        <script src="js/third-party/threejs/loaders/OBJLoader.js"></script>
-        <script src="js/third-party/threejs/effects/VREffect.js"></script>
-        <script src="js/third-party/threejs/effects/StereoEffect.js"></script>
+  <script src="js/third-party/threejs/loaders/OBJLoader.js"></script>
+  <script src="js/third-party/threejs/effects/VREffect.js"></script>
+  <script src="js/third-party/threejs/effects/StereoEffect.js"></script>
 
-        <script src="js/third-party/threejs/controls/VRControls.js"></script>
-        <script src="js/third-party/threejs/controls/DeviceOrientationControls.js"></script>
-        <script src="js/third-party/threejs/controls/OrbitControls.js"></script>
+  <script src="js/third-party/threejs/controls/VRControls.js"></script>
+  <script src="js/third-party/threejs/controls/DeviceOrientationControls.js"></script>
+  <script src="js/third-party/threejs/controls/OrbitControls.js"></script>
 
-        <script src="js/third-party/TweenMax.min.js"></script>
-        <script src="js/third-party/Odeo.js"></script>
-        <script src="js/third-party/perlin.js"></script>
+  <script src="js/third-party/TweenMax.min.js"></script>
+  <script src="js/third-party/Odeo.js"></script>
+  <script src="js/third-party/perlin.js"></script>
 
-        <script src="js/utils/helpers.js"></script>
+  <script src="js/utils/helpers.js"></script>
 
-        <script>
-            var camera, scene, renderer, effect, controls, vrControls;
-            var controller1, controller2;
-            var mobile = false;
-            var vr = false;
+  <script>
+  var camera, scene, renderer, effect, controls, vrControls;
+  var controller1, controller2;
+  var mobile = false;
+  var vr = false;
 
-            init();
-            setup();
-            render();
+  init();
+  setup();
+  render();
 
-            function init() {
+  function init() {
 
-                // renderer
+    // renderer
+    renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
 
-                renderer = new THREE.WebGLRenderer({antialias: true});
-                renderer.setPixelRatio(window.devicePixelRatio);
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                document.body.appendChild(renderer.domElement);
+    // scene
+    scene = new THREE.Scene();
 
-                // scene
+    // camera
+    camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 0, 3);
 
-                scene = new THREE.Scene();
+    // controls
+    controls = new THREE.OrbitControls(camera);
+    controls.autoRotate = true;
 
-                // camera
+    // events
+    addEvents();
 
-                camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
-                camera.position.set(0, 0, 3);
+  }
 
-                // controls
+  function setup() {
 
-                controls = new THREE.OrbitControls(camera);
-                controls.autoRotate = true;
+    //Sykybox
+    // var cubeShader = THREE.ShaderLib['cube'];
+    // cubeShader.uniforms['tCube'].value = getCubeMap(2);
+    //
+    // var skyBoxMaterial = new THREE.ShaderMaterial({
+    //     fragmentShader: cubeShader.fragmentShader,
+    //     vertexShader: cubeShader.vertexShader,
+    //     uniforms: cubeShader.uniforms,
+    //     depthWrite: false,
+    //     side: THREE.BackSide
+    // });
+    //
+    // var skyBox = new THREE.Mesh(new THREE.CubeGeometry(100, 100, 100), skyBoxMaterial);
+    //
+    // scene.add(skyBox);
 
-                // events
+    //Materials
+    // var material = new THREE.MeshPhongMaterial({shading: THREE.FlatShading, side: THREE.DousbleSide});
+    // var material = new THREE.MeshBasicMaterial({});
 
-                addEvents();
+    //skyBox material for meshes
+    var material = new THREE.MeshPhongMaterial({
+      //shading: THREE.FlatShading,
+      envMap: getCubeMap(5),
+      // side: THREE.DoubleSide
+    });
 
-            }
+    var cubeMaterial = new THREE.MeshBasicMaterial({wireframe:true, transparent:true, opacity:1});
 
-            function setup() {
+    // central object
+    var geometry = new THREE.TorusKnotGeometry(0.64, 0.25, 125, 7);
+    var object = new THREE.Mesh(geometry, cubeMaterial);
+    scene.add(object);
 
-                // central object
+    // cubes
+    var group = new THREE.Object3D();
+    var side = 6;
+    for (var _x = -side; _x <= side; _x++) {
+      for (var _y = -side; _y <= side; _y++) {
+        for (var _z = -side; _z <= side; _z++) {
 
-                var geometry = new THREE.TorusKnotGeometry(0.64, 0.25, 25, 6);
-                var material = new THREE.MeshPhongMaterial({shading: THREE.FlatShading, side: THREE.DoubleSide});
-                var object = new THREE.Mesh(geometry, material);
-                scene.add(object);
+          //noise
+          // var s = noise.simplex3(_x, _y, _z);
 
-                // cubes 
+          var geo = new THREE.BoxGeometry(.01, 5, .01, 1, 1, 1);
+          // var geo = new THREE.TorusKnotGeometry(.05, .05, 5, 5);
+          var mesh = new THREE.Mesh(geo, material)
+          mesh.position.set(_x, _y, _z)
+          mesh.rotation.set(Math.random(360), Math.random(360), Math.random(360));
+          group.add(mesh);
+        }
+      }
+    }
 
-                var group = new THREE.Object3D();
-                var side = 3
-                for (var _x = -side; _x <= side; _x++) {
-                    for (var _y = -side; _y <= side; _y++) {
-                        for (var _z = -side; _z <= side; _z++) {
-                            var geo = new THREE.BoxGeometry(.1, .1, .1, 1, 1, 1)
-                            var mesh = new THREE.Mesh(geo, material)
-                            mesh.position.set(_x, _y, _z)
-                            group.add(mesh);
-                        }
-                    }
-                }
+    // merge
+    var geom = new THREE.Geometry();
+    for (var i = 0; i < group.children.length; i++) {
+      group.children[i].updateMatrix();
+      geom.merge(group.children[i].geometry, group.children[i].matrix);
+    }
+    group = new THREE.Mesh(geom, material);
+    scene.add(group);
 
-                // merge
+    // light
+    var light = new THREE.DirectionalLight(0xffffff, 2);
+    light.position.set(-1, 1.5, 0.5);
+    scene.add(light);
 
-                var geom = new THREE.Geometry()
-                for (var i = 0; i < group.children.length; i++) {
-                    group.children[i].updateMatrix();
-                    geom.merge(group.children[i].geometry, group.children[i].matrix);
-                }
-                group = new THREE.Mesh(geom, material);
-                scene.add(group)
+    //Ambien light
+    scene.add(new THREE.AmbientLight(0xffffff, 1));
+  }
 
-                // light
+  function render() {
 
-                var light = new THREE.DirectionalLight(0xffffff);
-                light.position.set(-1, 1.5, 0.5);
-                scene.add(light);
-            }
+    // vr
+    if (vr) {
+      vrControls.update();
+      controller1.update();
+      controller2.update();
+      effect.requestAnimationFrame(render);
+      effect.render(scene, camera);
+      return;
+    }
 
-            function render() {
-                
-                // vr
+    // everything else
+    requestAnimationFrame(render);
 
-                if (vr) {
-                    vrControls.update();
-                    controller1.update();
-                    controller2.update();
-                    effect.requestAnimationFrame(render);
-                    effect.render(scene, camera);
-                    return;
-                }
-                
-                // everything else
-                
-                requestAnimationFrame(render);
+    controls.update();
+    if (mobile) {
+      camera.position.set(0, 0, 0)
+      camera.translateZ(5);
+    }
+    renderer.render(scene, camera);
 
-                controls.update();
-                if (mobile) {
-                    camera.position.set(0, 0, 0)
-                    camera.translateZ(5);
-                }
-                renderer.render(scene, camera);
+  }
 
-            }
-
-        </script>
-    </body>
+  </script>
+</body>
 </html>
