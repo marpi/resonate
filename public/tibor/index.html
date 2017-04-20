@@ -75,7 +75,7 @@
                 // camera
 
                 camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
-                camera.position.set(0, 0, 3);
+                camera.position.set(0, 0, 1);
 
                 // controls
 
@@ -164,19 +164,7 @@
             }
 
             function render() {
-                // vr
 
-                if (vr) {
-                    vrControls.update();
-                    controller1.update();
-                    controller2.update();
-                    effect.requestAnimationFrame(render);
-                    effect.render(scene, camera);
-                    center = new THREE.Vector3(0, 1.8, 0);
-
-                    return;
-                }
-                
                 raycaster.setFromCamera(vecZero , camera );
 
                 // calculate objects intersecting the picking ray
@@ -202,7 +190,7 @@
                             }
 
                             var d = rayCastPoint.distanceTo(v);
-                            if (d < 0.3){
+                            if (d < 0.5){
                                 var outwards = v.clone().sub(center).normalize();
                                 // console.log(outwards);
                                 v.add(outwards.multiplyScalar(0.01));
@@ -213,6 +201,20 @@
                 // everything else
                 
                 hugBoxGeom.verticesNeedUpdate=true;
+
+                // vr
+
+                if (vr) {
+                    vrControls.update();
+                    controller1.update();
+                    controller2.update();
+                    effect.requestAnimationFrame(render);
+                    effect.render(scene, camera);
+
+                    center = new THREE.Vector3(0, 1.8, 0);
+                    return;
+                    
+                }
 
                 requestAnimationFrame(render);
 
