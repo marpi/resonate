@@ -45,11 +45,17 @@
   var mobile = false;
   var vr = false;
 
+  var allObjects = [];
+
   init();
   setup();
   render();
 
   function init() {
+    // odeo sound
+    odeo = new Odeo({});
+    odeo.stopUsingMicrophone();
+    odeo.playMedia('assets/sound/jewel.ogg');
 
     // renderer
     renderer = new THREE.WebGLRenderer({antialias: true});
@@ -77,7 +83,7 @@
 
     //Sykybox
     // var cubeShader = THREE.ShaderLib['cube'];
-    // cubeShader.uniforms['tCube'].value = getCubeMap(2);
+    // cubeShader.uniforms['tCube'].value = getCubeMap(1);
     //
     // var skyBoxMaterial = new THREE.ShaderMaterial({
     //     fragmentShader: cubeShader.fragmentShader,
@@ -95,10 +101,12 @@
     // var material = new THREE.MeshPhongMaterial({shading: THREE.FlatShading, side: THREE.DousbleSide});
     // var material = new THREE.MeshBasicMaterial({});
 
+    var materialRed = new THREE.MeshBasicMaterial({color:0xf00000});
+
     //skyBox material for meshes
     var material = new THREE.MeshPhongMaterial({
       //shading: THREE.FlatShading,
-      envMap: getCubeMap(5),
+      envMap: getCubeMap(0),
       // side: THREE.DoubleSide
     });
 
@@ -108,6 +116,8 @@
     var geometry = new THREE.TorusKnotGeometry(0.64, 0.25, 125, 7);
     var object = new THREE.Mesh(geometry, cubeMaterial);
     scene.add(object);
+
+    allObjects.push(object);
 
     // cubes
     var group = new THREE.Object3D();
@@ -125,6 +135,9 @@
           mesh.position.set(_x, _y, _z)
           mesh.rotation.set(Math.random(360), Math.random(360), Math.random(360));
           group.add(mesh);
+
+          // console.log(mesh);
+          // allObjects.push(mesh);
         }
       }
     }
@@ -138,16 +151,53 @@
     group = new THREE.Mesh(geom, material);
     scene.add(group);
 
+    // spheres
+    // var groupSpheres = new THREE.Object3D();
+    // var side = 3;
+    // for (var _x = -side; _x <= side; _x++) {
+    //   for (var _y = -side; _y <= side; _y++) {
+    //     for (var _z = -side; _z <= side; _z++) {
+    //
+    //       //noise
+    //       var s = noise.simplex3(_x, _y, _z);
+    //
+    //       var geoSphere = new THREE.SphereGeometry(.03, 32, 32);
+    //       var meshSpehere = new THREE.Mesh(geoSphere, materialRed)
+    //       meshSpehere.position.set(_x, _y, _z)
+    //       // meshSpehere.rotation.set(Math.random(360), Math.random(360), Math.random(360));
+    //       group.add(meshSpehere);
+    //     }
+    //   }
+    // }
+
+    // var geom1 = new THREE.Geometry();
+    // for (var i = 0; i < group.children.length; i++) {
+    //   group.children[i].updateMatrix();
+    //   geom.merge(group.children[i].geometry, group.children[i].matrix);
+    // }
+    // groupSperes = new THREE.Mesh(geom1, materialRed);
+    // scene.add(groupSpheres);
+
     // light
     var light = new THREE.DirectionalLight(0xffffff, 2);
     light.position.set(-1, 1.5, 0.5);
     scene.add(light);
 
-    //Ambien light
+    //Ambient light
     scene.add(new THREE.AmbientLight(0xffffff, 1));
   }
 
   function render() {
+
+    odeo.update();
+    //console.log(odeo.frequencyData)
+
+    for (var i = 0; i < allObjects.length; i++) {
+      var m = allObjects[i];
+      var s = 3 * odeo.frequencyData[i] / 255;
+      m.scale.set(s/2, s/2, s/2);
+      m.rotation.set(s,s,s)
+    }
 
     // vr
     if (vr) {
