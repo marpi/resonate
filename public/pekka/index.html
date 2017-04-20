@@ -61,15 +61,15 @@
 
             function startSound() {
                 document.getElementById("touch").style.visibility = "hidden";
+
+                odeo = new Odeo({});
+                odeo.stopUsingMicrophone();
                 odeo.playMedia('assets/sound/jewel.ogg');
                 render();
             }
 
             function init() {
                 // sound
-
-                odeo = new Odeo({});
-                odeo.stopUsingMicrophone();
 
                 // renderer
 
