@@ -62,15 +62,19 @@
             function startSound() {
                 document.getElementById("touch").style.visibility = "hidden";
 
+                // sound
+
                 odeo = new Odeo({});
                 odeo.stopUsingMicrophone();
-                odeo.playMedia('assets/sound/jewel.ogg');
+
+                odeo.playMedia('assets/sound/They All Fail.mp3');
+
+                // start render
+
                 render();
             }
 
             function init() {
-                // sound
-
                 // renderer
 
                 renderer = new THREE.WebGLRenderer({antialias: true});
@@ -161,9 +165,10 @@
                 // light.castShadow = true;
 
                 var targetObject = new THREE.Object3D();
-	            scene.add(targetObject);
+                targetObject.position.y = 0.3;
+	              scene.add(targetObject);
 
-	            light.target = targetObject;
+	              light.target = targetObject;
 
                 lights.push(light);
 
@@ -171,18 +176,20 @@
             }
 
             function render() {
-                odeo.update();
+                if (odeo) {
+                    odeo.update();
 
-                for (var i = 0; i < allObjects.length; i++) {
-                    var m = allObjects[i];
-                    var s = 3 * odeo.frequencyData[10] / 255;
-                    m.scale.set(1, s+0.1, 1);
+                    for (var i = 0; i < allObjects.length; i++) {
+                        var m = allObjects[i];
+                        var s = 3 * odeo.frequencyData[10] / 255;
+                        m.scale.set(1, s+0.1, 1);
+                    }
                 }
 
                 var targetY = lights[0].target.position.y;
-                targetY += 0.2;
+                targetY = targetY * 1.025;
                 if (targetY >= 36) {
-                    targetY = 0;
+                    targetY = .3;
                     TweenMax.to(lights[0].color, 0.2, {
                         r: Math.random(),
                         g: Math.random(),
