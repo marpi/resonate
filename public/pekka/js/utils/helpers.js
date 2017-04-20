@@ -95,7 +95,7 @@ function getCubeMap(i) {
         {file: "skyboxsun25degtest.jpg", size: 1024},
         {file: "stormydays_large.jpg", size: 1024},
         {file: "violentdays_large.jpg", size: 1024},
-        {file: "darkness.jpg", size: 1024},
+        {file: "gradient.jpg", size: 1024},
     ];
 
     var loader = new THREE.ImageLoader();
@@ -130,24 +130,24 @@ function getCubeMap(i) {
 }
 
 /*
- * 
- 
+ *
+
  var geom = new THREE.Geometry()
  for (var i = 0; i < container.children.length; i++) {
  container.children[i].updateMatrix();
  geom.merge(container.children[i].geometry, container.children[i].matrix);
  }
  container = new THREE.Mesh(geom, mat);
- 
- * 
+
+ *
  */
 
 /*
- * 
- 
+ *
+
  var cubeShader = THREE.ShaderLib['cube'];
  cubeShader.uniforms['tCube'].value = getCubeMap(10);
- 
+
  var skyBoxMaterial = new THREE.ShaderMaterial({
  fragmentShader: cubeShader.fragmentShader,
  vertexShader: cubeShader.vertexShader,
@@ -155,50 +155,50 @@ function getCubeMap(i) {
  depthWrite: false,
  side: THREE.BackSide
  });
- 
+
  var skyBox = new THREE.Mesh(new THREE.CubeGeometry(100, 100, 100),skyBoxMaterial);
- 
+
  scene.add(skyBox);
- 
- *  
+
+ *
  */
 
 /*
- * 
- 
+ *
+
  var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 );
  hemiLight.color.setHSL( 0.6, 1, 0.6 );
  hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
  hemiLight.position.set( 0, 0, 0 );
  scene.add( hemiLight );
- 
- * 
+
+ *
  */
 
 /*
- * 
- 
+ *
+
  var ambientLight = new THREE.AmbientLight(0x999999);
  scene.add(ambientLight);
- 
- *  
+
+ *
  */
 
 /*
- * 
+ *
  var texture = new THREE.TextureLoader().load("textures/image2.jpg");
  texture.wrapS = THREE.RepeatWrapping;
  texture.wrapT = THREE.RepeatWrapping;
  texture.repeat.set(1, 1);
- 
- *  
+
+ *
  */
 
 
 //var s = noise.simplex3(_x, _y, _z);
 
 /*
- * 
+ *
 
     odeo = new Odeo({});
     odeo.stopUsingMicrophone();
