@@ -16,10 +16,17 @@
                 margin: 0px;
                 overflow: hidden;
                 background-color: #000000;
+                color: #4a4a4a;
+            }
+            p {
+                margin: 30px auto;
+                text-align: center;
             }
         </style>
     </head>
-    <body>
+    <body onclick="startSound()">
+
+        <p id="touch">Touch to start.</p>
 
         <script src="js/third-party/threejs/three.js"></script>
         <script src="js/third-party/threejs/vr/ViveController.js"></script>
@@ -49,14 +56,18 @@
 
             init();
             setup();
-            render();
+
+            function startSound() {
+                document.getElementById("touch").style.visibility = "hidden";
+                odeo.playMedia('assets/sound/jewel.ogg');
+                render();
+            }
 
             function init() {
                 // sound
 
                 odeo = new Odeo({});
                 odeo.stopUsingMicrophone();
-                odeo.playMedia('assets/sound/jewel.ogg')
 
                 // renderer
 
