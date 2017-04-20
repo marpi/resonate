@@ -155,75 +155,63 @@
                 var geom = new THREE.SphereGeometry(.1, 15, 15)
                 for (var i = 0; i < 3; i++) {
                     var c = new THREE.Color()
-                    c.setHSL(k + i / 12, 1, .7)
+                    c.setHSL(k + i / 12, 1, 0)
                     var light = new THREE.PointLight(c, .5, 13000);
                     light.castShadow = true;
                     light.shadow.bias = 0.1;
                     light.shadow.mapSize.width = 1024;
                     light.shadow.mapSize.height = 1024;
-                    //scene.add(light);
+                    scene.add(light);
 
-                    var sphere = new THREE.Mesh(geom, new THREE.MeshBasicMaterial({color: c}))
-                    sphere.add(light)
-                    scene.add(sphere)
+                    //var sphere = new THREE.Mesh(geom, new THREE.MeshBasicMaterial({color: c}))
+                    //sphere.add(light)
+                    //scene.add(sphere)
 
-                    lights.push(sphere)
-                }
-
-                setInterval(generate, 1000)
-            }
-
-            function generate() {
-                if (group2) {
-                    group2.geometry.dispose()
-                    scene.remove(group2)
-                    //group.dispose()
+                    lights.push(light)
                 }
 
                 var material = new THREE.MeshPhongMaterial({}); //wireframe: true
                 var group = new THREE.Object3D();
                 var side = 100
-                var d = Math.random() / 3
-                var r = Math.random() * 6
+                var d = .2
+                var r = 3
                 for (var i = 0; i < side; i++) {
-                    var geo = new THREE.TorusGeometry(.1 + i * d, .1, 33, 10)
+                    var geo = new THREE.TorusGeometry(.1 + i * d, .1, 33, 3)
                     var mesh = new THREE.Mesh(geo, material)
                     //mesh.position.set((Math.random() - .5) * 5, (Math.random() - .5) * 5, (Math.random() - .5) * 5)
-                    mesh.rotation.set(Math.PI / 2, Math.sin(i / 10) / r, Math.sin(i / 10) / r)
+                    mesh.rotation.set(Math.PI / 2, 0, 0)//, Math.sin(i / 10) / r, Math.sin(i / 10) / r)
 
                     group.add(mesh);
-                    //scene.add(mesh)
+                    scene.add(mesh)
 
-                    //allObjects.push(mesh)
+                    allObjects.push(mesh)
 
                     //}
                 }
 
-                // merge
+                generate()
+            }
 
-                var geom = new THREE.Geometry()
-                for (var i = 0; i < group.children.length; i++) {
-                    group.children[i].updateMatrix();
-                    geom.merge(group.children[i].geometry, group.children[i].matrix);
-                }
-
-
-                /*for (var i = 0; i < geom.vertices.length; i++) {
-                 var v = geom.vertices[i];
-                 v.x += (Math.random() - .5) / 3
-                 v.y += (Math.random() - .5) / 3
-                 v.z += (Math.random() - .5) / 3
-                 }*/
-                //console.log(geom)
-                group2 = new THREE.Mesh(geom, material);
-                //group.castShadow = true;
-                //group.receiveShadow = true;
-
-                scene.add(group2)
+            function generate() {
+                TweenMax.delayedCall(3,generate)
                 var k = Math.random()
                 for (var i = 0; i < lights.length; i++) {
                     var light = lights[i]
-                    light.children[0].color.setHSL(k + i / 12, 1, .7)
+                    var c = new THREE.Color()
+                    c.setHSL(k + i / 12, 1, .7)
+                    var r = Math.random()
+                    var g = Math.random()
+                    var b = Math.random()
+                    TweenMax.to(light.color, 1, {r: c.r, g: c.g, b: c.b})
+                    TweenMax.to(light.color, 1, {r: c.r, g: c.g, b: c.b})
+                }
+
+                var r = 0
+                var ri = (Math.random() - .5) / 10
+                for (var i = 0; i < allObjects.length; i++) {
+                    var o = allObjects[i]
+                    r += ri
+                    TweenMax.to(o.rotation, 2, {delay: Math.sin(i / 10) * .2 + .2, y: r, z: r, ease: Back.easeOut})
                 }
             }
 
