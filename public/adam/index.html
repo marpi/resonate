@@ -291,7 +291,7 @@
                     var s = noise.simplex3(x+t/5, y/5, z/5);
 
                     if(vr){
-                        if( controller1.distanceTo( particles[i].p ) < 0.25){
+                        if( controller1.position.distanceTo( particles[i].p ) < 0.25){
                             particles[i].s = 60.0;
                         }
                     }
