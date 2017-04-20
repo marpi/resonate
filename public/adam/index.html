@@ -66,7 +66,9 @@
                 this.v = new THREE.Vector3(0,0,0);
                 this.a = new THREE.Vector3(0,0,0);
 
-                this.decay = 0.4;
+                this.decay = 0.6;
+                this.sd    = 0.97;
+
 
                 this.s = s;
                 this.d = 0.0;
@@ -85,7 +87,7 @@
 
 
                     // this.s = ((this.s-this.d) * this.decay) + this.d;
-                    this.s *=   this.decay;
+                    this.s *=   this.sd;
 
 
 
@@ -152,7 +154,7 @@
                         obj.scale.x = 0.0001
                         obj.scale.y = 0.0001
                         obj.scale.z = 0.0001
-                        obj.position.y = 10;// = new THREE.Vector3(0,100,0);
+                        obj.position.y = 30;// = new THREE.Vector3(0,100,0);
                         obj.rotation.x = 1.5;
 
                         scene.add( obj );
@@ -217,19 +219,19 @@
                 // Object group
                 p_group = new THREE.Object3D();
 
-                var side = 20   
-                var size = 5.0/side;
+                var side = 8   
+                var size = 0.1/side;
                 particles = [];
                 for (var _x = -side; _x <= side; _x++) {
-                    // for (var _y = -side; _y <= side; _y++) {
-                    for (var _y = 0; _y <= 0; _y++) {
+                    for (var _y = -side; _y <= side; _y++) {
+                    //for (var _y = 0; _y <= 0; _y++) {
                         for (var _z = -side; _z <= side; _z++) {
                             // var geo = new THREE.BoxGeometry(.1, .1, .1, 1, 1, 1)
                             var geo = new THREE.BoxGeometry(size,size,size, 1, 1, 1)
                             var mesh = new THREE.Mesh(geo, material)
                             mesh.position.set(_x, _y, _z)
                             p_group.add(mesh);
-                            var t = new THREE.Vector3(_x,_y,_z);
+                            var t = new THREE.Vector3(_x/3,_y/3,_z/3);
                             var p = new THREE.Vector3(0,100,0);
                             p.add(t);
                             particles.push(new Vtx(p,t,1.0));
@@ -272,7 +274,7 @@
 
                 var cnt = p_group.children.length;
                 
-                effector.position.set(Math.sin(t) * 20,0,Math.cos(t)*20);
+                effector.position.set(Math.sin(t) * 2.5,0,Math.cos(t)*2.5);
 
                 var ep = new THREE.Vector3();
 
@@ -288,10 +290,16 @@
                     var z = p.z; 
                     var s = noise.simplex3(x+t/5, y/5, z/5);
 
+                    if(vr){
+                        if( controller1.distanceTo( particles[i].p ) < 0.25){
+                            particles[i].s = 60.0;
+                        }
+                    }
+                    else{
 
-
-                    if( ep.distanceTo( particles[i].p ) < 10){
-                        particles[i].s = 10.0;
+                        if( ep.distanceTo( particles[i].p ) < 0.25){
+                            particles[i].s = 60.0;
+                        }
                     }
 
                     particles[i].update();
@@ -304,11 +312,19 @@
                     node.scale.z =  1.0 + particles[i].s;
 
 
+                    // if( ep.distanceTo( np ) < 10){
+                    // console.log(controller1)
 
-                    if( ep.distanceTo( np ) < 10){
+                    if(vr){
+                        if( controller1.position.distanceTo( np ) < 0.25){
+                            particles[i].p = np.add(new THREE.Vector3(0,1,0)); 
+                        } 
+                    }
 
-                        particles[i].p = np.add(new THREE.Vector3(0,2,0));
-
+                    else{
+                        if( ep.distanceTo( np ) < 0.25){
+                            particles[i].p = np.add(new THREE.Vector3(0,1,0));
+                        }
                     }
 
                     // node.position.set(node.position.clone().add(new THREE.Vector3(0,s,0) ));
