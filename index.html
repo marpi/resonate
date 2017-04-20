@@ -125,31 +125,31 @@
 
                 // cubes 
 
-                var material = new THREE.MeshBasicMaterial({envMap: getCubeMap(8)});
-                var group = new THREE.Object3D();
-                var side = 10
-                for (var _x = -side; _x <= side; _x++) {
-                    //for (var _y = -side; _y <= side; _y++) {
-                    for (var _z = -side; _z <= side; _z++) {
-                        var _y = 0
-
-
-
-                        //var s = noise.simplex3(_x / 5, _y / 5, _z / 5);
-
-                        //var cubeSize = (s / 2 + .5)//*2
-
-                        var geo = new THREE.BoxGeometry(1, 1, 1)
-                        var mesh = new THREE.Mesh(geo, material)
-                        mesh.position.set(_x, _y, _z)
-
-                        group.add(mesh);
-                        scene.add(mesh)
-
-                        allObjects.push(mesh)
-                    }
-                    //}
-                }
+                /*var material = new THREE.MeshBasicMaterial({envMap: getCubeMap(8)});
+                 var group = new THREE.Object3D();
+                 var side = 10
+                 for (var _x = -side; _x <= side; _x++) {
+                 //for (var _y = -side; _y <= side; _y++) {
+                 for (var _z = -side; _z <= side; _z++) {
+                 var _y = 0
+                 
+                 
+                 
+                 //var s = noise.simplex3(_x / 5, _y / 5, _z / 5);
+                 
+                 //var cubeSize = (s / 2 + .5)//*2
+                 
+                 var geo = new THREE.BoxGeometry(1, 1, 1)
+                 var mesh = new THREE.Mesh(geo, material)
+                 mesh.position.set(_x, _y, _z)
+                 
+                 group.add(mesh);
+                 scene.add(mesh)
+                 
+                 allObjects.push(mesh)
+                 }
+                 //}
+                 }*/
 
                 // merge
 
@@ -177,15 +177,20 @@
                 light.position.set(-1, 1.5, 0.5);
                 scene.add(light);
             }
-
+            var material = new THREE.MeshBasicMaterial({envMap: getCubeMap(8)});
+            var boxGeom = new THREE.BoxGeometry(.1, .1, .1)
+            
+            function remove(box){
+                controller1.remove(box)
+            }
             function render() {
 
                 if (controller1 && controller2) {
-                    for (var i = 0; i < allObjects.length; i++) {
-                        var m = allObjects[i]
-                        m.scale.y = m.position.distanceTo(controller1.position)
-                        //console.log(controller1.position)
-                        //m.scale.y += m.position.distanceTo(controller2.position)
+                    if (controller1.triggerIsPressed) {
+                        var box = new THREE.Mesh(boxGeom, material)
+                        controller1.add(box)
+
+                        TweenMax.to(box.position, 1, {y: Math.random(), x: Math.random() - .5, z: Math.random() - .5, onComplete: remove, onCompleteParams: [box]})
                     }
                 }
 
