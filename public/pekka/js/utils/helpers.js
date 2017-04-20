@@ -26,7 +26,7 @@ function addEvents() {
     }
 
     window.addEventListener('resize', onWindowResize, false);
-    window.addEventListener('deviceorientation', setOrientationControls, true);
+    // window.addEventListener('deviceorientation', setOrientationControls, true);
     window.addEventListener('vrdisplaypresentchange', function (event) {
         //vr = renderer.isPresenting
     }, false);
