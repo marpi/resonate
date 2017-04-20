@@ -19,14 +19,16 @@
                 color: #4a4a4a;
             }
             p {
+                padding: 20px;
                 margin: 30px auto;
                 text-align: center;
+                cursor: pointer;
             }
         </style>
     </head>
-    <body onmousedown="startSound()">
+    <body>
 
-        <p id="touch">Touch to start.</p>
+        <p id="touch" onmousedown="startSound()">Touch to start.</p>
 
         <script src="js/third-party/threejs/three.js"></script>
         <script src="js/third-party/threejs/vr/ViveController.js"></script>
