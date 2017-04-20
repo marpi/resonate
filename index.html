@@ -153,10 +153,10 @@
                  scene.add(light);*/
                 var k = Math.random()
                 var geom = new THREE.SphereGeometry(.1, 15, 15)
-                for (var i = 0; i < 3; i++) {
+                for (var i = 0; i < 2; i++) {
                     var c = new THREE.Color()
                     c.setHSL(k + i / 12, 1, 0)
-                    var light = new THREE.PointLight(c, .5, 13000);
+                    var light = new THREE.PointLight(c, .8, 13000);
                     light.castShadow = true;
                     light.shadow.bias = 0.1;
                     light.shadow.mapSize.width = 1024;
@@ -198,7 +198,7 @@
                 for (var i = 0; i < lights.length; i++) {
                     var light = lights[i]
                     var c = new THREE.Color()
-                    c.setHSL(k + i / 6, 1, .7)
+                    c.setHSL(k + i / 4, 1, .7)
                     var r = Math.random()
                     var g = Math.random()
                     var b = Math.random()
