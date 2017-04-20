@@ -185,13 +185,14 @@
             }
             function render() {
 
-                if (controller1 && controller2) {
-                    if (controller1.triggerIsPressed) {
+                if (controller1) {
+                    //if (controller1.triggerIsPressed) {
+                    console.log(controller1)
                         var box = new THREE.Mesh(boxGeom, material)
                         controller1.add(box)
 
                         TweenMax.to(box.position, 1, {y: Math.random(), x: Math.random() - .5, z: Math.random() - .5, onComplete: remove, onCompleteParams: [box]})
-                    }
+                    //}
                 }
 
                 // vr
