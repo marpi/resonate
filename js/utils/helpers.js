@@ -195,6 +195,14 @@ function getCubeMap(i) {
  */
 
 
+/*
+var loader = new THREE.OBJLoader();
+loader.setPath('assets/models/');
+loader.load('monkey.obj', function (object) {
+    scene.add(object)
+});
+*/
+
 //var s = noise.simplex3(_x, _y, _z);
 
 /*
