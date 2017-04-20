@@ -176,7 +176,7 @@
                 var d = .2
                 var r = 3
                 for (var i = 0; i < side; i++) {
-                    var geo = new THREE.TorusGeometry(.1 + i * d, .1, 33, 3)
+                    var geo = new THREE.TorusGeometry(.1 + i * d, .1, 10, 3)
                     var mesh = new THREE.Mesh(geo, material)
                     //mesh.position.set((Math.random() - .5) * 5, (Math.random() - .5) * 5, (Math.random() - .5) * 5)
                     mesh.rotation.set(Math.PI / 2, 0, 0)//, Math.sin(i / 10) / r, Math.sin(i / 10) / r)
