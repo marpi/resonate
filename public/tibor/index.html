@@ -44,18 +44,28 @@
             var controller1, controller2;
             var mobile = false;
             var vr = false;
+            var raycaster = new THREE.Raycaster();
+            var vecZero = new THREE.Vector2()
+            var hugBoxGeom;
+            var sphereSize = 0.1;
+            //var center = new THREE.Vector3(0.5, 1.8, 0.5);
+            var center = new THREE.Vector3();
+            var rayCastPoint = new THREE.Vector3();
 
             init();
             setup();
             render();
 
             function init() {
+                // Create a box geometry
 
                 // renderer
 
                 renderer = new THREE.WebGLRenderer({antialias: true});
                 renderer.setPixelRatio(window.devicePixelRatio);
                 renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.setClearColor( 0xffffff );
+
                 document.body.appendChild(renderer.domElement);
 
                 // scene
@@ -70,7 +80,7 @@
                 // controls
 
                 controls = new THREE.OrbitControls(camera);
-                controls.autoRotate = true;
+                //controls.autoRotate = true;
 
                 // events
 
@@ -79,22 +89,52 @@
             }
 
             function setup() {
-
                 // central object
-
+                
+                /*
                 var geometry = new THREE.TorusKnotGeometry(0.64, 0.25, 25, 6);
-                var material = new THREE.MeshPhongMaterial({shading: THREE.FlatShading, side: THREE.DoubleSide});
                 var object = new THREE.Mesh(geometry, material);
                 scene.add(object);
+                */
 
-                // cubes 
+                var material = new THREE.MeshPhongMaterial({
+                    shading: THREE.FlatShading, 
+                    side: THREE.DoubleSide});
 
+                // -- Create a geom -- 
+                hugBoxGeom = new THREE.BoxGeometry(1., 2., 1., 10, 20, 10);
+
+                for (var i = 0; i < hugBoxGeom.vertices.length; i++) {
+                    var v = hugBoxGeom.vertices[i];
+                    v.x += (Math.random() - .5) / 10
+                   // v.y += (Math.random() - .5) / 3
+                    //v.z += (Math.random() - .5) /3
+                }
+
+                var hugBoxMaterial = new THREE.MeshPhongMaterial({
+                    envMap: getCubeMap(4), 
+                    //color:0xff0000,
+                    //wireframe: true,
+                     shading: THREE.FlatShading,
+                     specular: 0x111111,
+                     side: THREE.DoubleSide 
+                });
+
+
+                //var hugBoxMaterial = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+                var hugBox = new THREE.Mesh( hugBoxGeom, hugBoxMaterial );
+                scene.add( hugBox );
+
+                // cubes
+
+                // deform the verticees
+/*
                 var group = new THREE.Object3D();
                 var side = 3
                 for (var _x = -side; _x <= side; _x++) {
                     for (var _y = -side; _y <= side; _y++) {
                         for (var _z = -side; _z <= side; _z++) {
-                            var geo = new THREE.BoxGeometry(.1, .1, .1, 1, 1, 1)
+                            var geo = new THREE.BoxGeometry(.1, .4, .1)
                             var mesh = new THREE.Mesh(geo, material)
                             mesh.position.set(_x, _y, _z)
                             group.add(mesh);
@@ -113,14 +153,17 @@
                 scene.add(group)
 
                 // light
+*/
+                scene.add( new THREE.AmbientLight( 0xff0000, 0.4 ) );
+
 
                 var light = new THREE.DirectionalLight(0xffffff);
                 light.position.set(-1, 1.5, 0.5);
                 scene.add(light);
+
             }
 
             function render() {
-                
                 // vr
 
                 if (vr) {
@@ -129,11 +172,48 @@
                     controller2.update();
                     effect.requestAnimationFrame(render);
                     effect.render(scene, camera);
+                    center = new THREE.Vector3(0, 1.8, 0);
+
                     return;
                 }
                 
+                raycaster.setFromCamera(vecZero , camera );
+
+                // calculate objects intersecting the picking ray
+                    var intersects = raycaster.intersectObjects( scene.children );
+
+                    var speed = 0.05;
+                    // each vertice should go towards center
+
+                    for ( var i = 0; i < intersects.length; i++ ) {
+                        var point = intersects[i].point;
+                        rayCastPoint = point;
+                        break;
+                    }
+
+                    // Move close
+                    for (var i = 0; i < hugBoxGeom.vertices.length; i++) {
+                            var v = hugBoxGeom.vertices[i];
+                            var res = center.clone().sub(v);
+                            var sphere = res.clone().negate().normalize().multiplyScalar(sphereSize);
+                        
+                            if (v.distanceTo(center) > sphereSize){
+                                v = v.lerp(center, 0.005);    
+                            }
+
+                            var d = rayCastPoint.distanceTo(v);
+                            if (d < 0.3){
+                                var outwards = v.clone().sub(center).normalize();
+                                // console.log(outwards);
+                                v.add(outwards.multiplyScalar(0.01));
+                            }
+                    }
+
+
                 // everything else
                 
+                hugBoxGeom.verticesNeedUpdate=true;
+
                 requestAnimationFrame(render);
 
                 controls.update();
