@@ -99,8 +99,8 @@
                  
                  var skyBox = new THREE.Mesh(new THREE.CubeGeometry(100, 100, 100), skyBoxMaterial);
                  //scene.add(skyBox);*/
-                var material = new THREE.MeshBasicMaterial({shading:THREE.FlatShading,envMap: getCubeMap(9),side:THREE.DoubleSide});//envMap: getCubeMap(8)
-                var geometry = new THREE.SphereGeometry(2., 25, 25);
+                var material = new THREE.MeshBasicMaterial({shading:THREE.FlatShading,wireframe:true,side:THREE.DoubleSide});//envMap: getCubeMap(8)
+                var geometry = new THREE.PlaneGeometry(10,10,32,32)
                 og=geometry.clone()
 
 
@@ -189,7 +189,8 @@
                     var v=object.geometry.vertices[i]
                     var f=odeo.frequencyData[i%128]/256
                     v.copy(og.vertices[i])
-                    v.multiplyScalar(1+f)
+                    v.z+=f
+                    //v.multiplyScalar(1+f)
                 }
                 object.geometry.verticesNeedUpdate=true;
 
