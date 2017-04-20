@@ -52,9 +52,9 @@
 
             function init() {
 
-                /*odeo = new Odeo({});
-                 odeo.stopUsingMicrophone();
-                 odeo.playMedia('assets/sound/sept.ogg')*/
+                odeo = new Odeo({});
+                odeo.stopUsingMicrophone();
+                odeo.playMedia('assets/sound/sept.ogg')
 
                 // renderer
 
@@ -153,10 +153,10 @@
                  scene.add(light);*/
                 var k = Math.random()
                 var geom = new THREE.SphereGeometry(.1, 15, 15)
-                for (var i = 0; i < 3; i++) {
+                for (var i = 0; i < 2; i++) {
                     var c = new THREE.Color()
                     c.setHSL(k + i / 12, 1, 0)
-                    var light = new THREE.PointLight(c, .5, 13000);
+                    var light = new THREE.PointLight(c, .8, 13000);
                     light.castShadow = true;
                     light.shadow.bias = 0.1;
                     light.shadow.mapSize.width = 1024;
@@ -176,7 +176,7 @@
                 var d = .2
                 var r = 3
                 for (var i = 0; i < side; i++) {
-                    var geo = new THREE.TorusGeometry(.1 + i * d, .1, 33, 3)
+                    var geo = new THREE.TorusGeometry(.1 + i * d, .1, 10, 3)
                     var mesh = new THREE.Mesh(geo, material)
                     //mesh.position.set((Math.random() - .5) * 5, (Math.random() - .5) * 5, (Math.random() - .5) * 5)
                     mesh.rotation.set(Math.PI / 2, 0, 0)//, Math.sin(i / 10) / r, Math.sin(i / 10) / r)
@@ -193,12 +193,12 @@
             }
 
             function generate() {
-                TweenMax.delayedCall(3,generate)
+                TweenMax.delayedCall(3, generate)
                 var k = Math.random()
                 for (var i = 0; i < lights.length; i++) {
                     var light = lights[i]
                     var c = new THREE.Color()
-                    c.setHSL(k + i / 12, 1, .7)
+                    c.setHSL(k + i / 4, 1, .7)
                     var r = Math.random()
                     var g = Math.random()
                     var b = Math.random()
@@ -218,14 +218,14 @@
             function render() {
                 //group2.rotation.y-=.003
 
-                //odeo.update();
+                odeo.update();
                 //console.log(odeo.frequencyData)
 
-                /*for (var i = 0; i < allObjects.length; i++) {
-                 var m = allObjects[i]
-                 var s = 3 * odeo.frequencyData[i] / 255
-                 m.scale.set(s, s, s)
-                 }*/
+                for (var i = 0; i < allObjects.length; i++) {
+                    var m = allObjects[i]
+                    var s = 3 * odeo.frequencyData[i] / 255
+                    m.scale.set(1, 1, 1 * s)
+                }
 
 
                 /*for (var i=0;i<object.geometry.vertices.length;i++){
