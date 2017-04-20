@@ -65,7 +65,7 @@
                 // camera
 
                 camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
-                camera.position.set(0, 0, 3);
+                camera.position.set(0, 1, 25);
 
                 // controls
 
@@ -80,26 +80,43 @@
 
             function setup() {
 
-                // central object
+                // materials
 
-                var geometry = new THREE.TorusKnotGeometry(0.64, 1, 50, 10);
-                var material = new THREE.MeshToonMaterial({shading: THREE.SmoothShading, side: THREE.DoubleSide});
-                var object = new THREE.Mesh(geometry, material);
-                object.rotation.x = Math.PI/2;
-                scene.add(object);
+                var cubeMaterial = new THREE.MeshBasicMaterial({
+                    envMap:getCubeMap(8),
+                    side: THREE.DoubleSide,
+                });
 
-                // cubes
+                var cubeShader = THREE.ShaderLib['cube'];
+                cubeShader.uniforms['tCube'].value = getCubeMap(8);
+
+                var skyBoxMaterial = new THREE.ShaderMaterial({
+                    fragmentShader: cubeShader.fragmentShader,
+                    vertexShader: cubeShader.vertexShader,
+                    uniforms: cubeShader.uniforms,
+                    depthWrite: false,
+                    side: THREE.BackSide
+                });
+
+                // cube map
+
+                var skyBox = new THREE.Mesh(new THREE.CubeGeometry(100, 100, 100), skyBoxMaterial);
+                scene.add(skyBox);
+
+                // terrain
 
                 var group = new THREE.Object3D();
-                var side = 2
-                for (var _x = -side; _x <= side; _x++) {
-                    for (var _y = -side; _y <= side; _y++) {
-                        for (var _z = -side; _z <= side; _z++) {
-                            var geo = new THREE.BoxGeometry(.1, .1, .1, 1, 1, 1)
-                            var mesh = new THREE.Mesh(geo, material)
-                            mesh.position.set(_x, _y, _z)
-                            group.add(mesh);
-                        }
+
+                var terrainSize = 100;
+
+                for (var _x = -terrainSize; _x < terrainSize; _x++) {
+                    for (var _z = -terrainSize; _z < terrainSize; _z++) {
+                        var _y = noise.simplex2(_x,_z)+1;
+
+                        var geo = new THREE.BoxGeometry(1, _y, 1);
+                        var mesh = new THREE.Mesh(geo, cubeMaterial);
+                        mesh.position.set(_x, _y/2-2, _z);
+                        group.add(mesh);
                     }
                 }
 
@@ -110,7 +127,7 @@
                     group.children[i].updateMatrix();
                     geom.merge(group.children[i].geometry, group.children[i].matrix);
                 }
-                group = new THREE.Mesh(geom, material);
+                group = new THREE.Mesh(geom, cubeMaterial);
                 scene.add(group)
 
                 // light
