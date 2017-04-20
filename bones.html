@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Three.js Bones Browser</title>
+        <style>
+
+            body {
+                margin:0;
+                font-family: 'inconsolata';
+                font-size: 15px;
+                line-height: 18px;
+                overflow: hidden;
+            }
+
+            canvas { width: 100%; height: 100% }
+
+            #newWindow {
+                display: block;
+                position: absolute;
+                bottom: 0.3em;
+                left: 0.5em;
+                color: #fff;
+            }
+        </style>
+    </head>
+    <body>
+
+        <script src="js/third-party/threejs/three.js"></script>
+        <script src="js/third-party/threejs/controls/OrbitControls.js"></script>
+
+        <script>
+
+            var gui, scene, camera, renderer, orbit, ambientLight, lights, meshes, bones, skeletonHelpers;
+
+            var state = {
+                animateBones: true
+
+            };
+
+            function initScene() {
+
+                scene = new THREE.Scene();
+                camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 200);
+                camera.position.z = 30;
+                camera.position.y = 30;
+
+                renderer = new THREE.WebGLRenderer({antialias: true});
+                renderer.setPixelRatio(window.devicePixelRatio);
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                document.body.appendChild(renderer.domElement);
+
+                orbit = new THREE.OrbitControls(camera, renderer.domElement);
+                //orbit.enableZoom = false;
+
+                ambientLight = new THREE.AmbientLight(0x000000);
+                scene.add(ambientLight);
+
+                lights = [];
+                lights[ 0 ] = new THREE.PointLight(0xffffff, 1, 0);
+                lights[ 0 ].position.set(0, 200, 0);
+
+                scene.add(lights[ 0 ]);
+
+                window.addEventListener('resize', function () {
+
+                    camera.aspect = window.innerWidth / window.innerHeight;
+                    camera.updateProjectionMatrix();
+
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+
+                }, false);
+
+                initBones();
+
+            }
+
+            function createGeometry(sizing) {
+
+                var geometry = new THREE.CylinderGeometry(
+                        0, // radiusTop
+                        5, // radiusBottom
+                        sizing.height, // height
+                        8, // radiusSegments
+                        sizing.segmentCount * 3, // heightSegments
+                        true                     // openEnded
+                        );
+
+                for (var i = 0; i < geometry.vertices.length; i++) {
+
+                    var vertex = geometry.vertices[ i ];
+                    var y = (vertex.y + sizing.halfHeight);
+
+                    var skinIndex = Math.floor(y / sizing.segmentHeight);
+                    var skinWeight = (y % sizing.segmentHeight) / sizing.segmentHeight;
+
+                    vertex.x -= (.5 - Math.random()) * 2
+                    vertex.z -= (.5 - Math.random()) * 2
+
+                    geometry.skinIndices.push(new THREE.Vector4(skinIndex, skinIndex + 1, 0, 0));
+                    geometry.skinWeights.push(new THREE.Vector4(1 - skinWeight, skinWeight, 0, 0));
+
+                }
+
+                return geometry;
+
+            }
+
+            function createBones(sizing) {
+
+                bones = [];
+
+                var prevBone = new THREE.Bone();
+                bones.push(prevBone);
+                prevBone.position.y = -sizing.halfHeight;
+
+                for (var i = 0; i < sizing.segmentCount; i++) {
+
+                    var bone = new THREE.Bone();
+                    bone.position.y = sizing.segmentHeight;
+                    bones.push(bone);
+                    prevBone.add(bone);
+                    prevBone = bone;
+
+                }
+
+                return bones;
+
+            }
+
+            function createMesh(geometry, bones) {
+
+                var material = new THREE.MeshStandardMaterial({
+                    skinning: true,
+                    color: 0xFFFFFF,
+                    emissive: 0x072534,
+                    side: THREE.DoubleSide,
+                    shading: THREE.FlatShading
+                });
+
+                var mesh = new THREE.SkinnedMesh(geometry, material);
+                var skeleton = new THREE.Skeleton(bones);
+
+                mesh.add(bones[ 0 ]);
+
+                mesh.bind(skeleton);
+
+                var skeletonHelper = new THREE.SkeletonHelper(mesh);
+                skeletonHelper.material.linewidth = 2;
+                scene.add(skeletonHelper);
+                skeletonHelpers.push(skeletonHelper)
+
+                return mesh;
+
+            }
+
+            function initBones() {
+                meshes = []
+                skeletonHelpers = [];
+
+                var segmentHeight = 8;
+                var segmentCount = 2;
+                var height = segmentHeight * segmentCount;
+                var halfHeight = height * 0.5;
+
+                var sizing = {
+                    segmentHeight: segmentHeight,
+                    segmentCount: segmentCount,
+                    height: height,
+                    halfHeight: halfHeight
+                };
+
+                for (var i = 0; i < 1; i++) {
+                    var mesh
+                    var geometry = createGeometry(sizing);
+                    var bones = createBones(sizing);
+                    mesh = createMesh(geometry, bones);
+
+                    scene.add(mesh);
+                    meshes.push(mesh)
+                    mesh.rotation.set(Math.random() * 3, Math.random() * 3, Math.random() * 3)
+                }
+
+            }
+
+            function render() {
+
+                requestAnimationFrame(render);
+                var time = Date.now() * 0.001;
+                //var bone = mesh;
+
+                //Wiggle the bones
+                /*if (state.animateBones) {
+                 for (var i = 0; i < mesh.skeleton.bones.length; i++) {
+                 mesh.skeleton.bones[ i ].position.x = 20*Math.sin(i+3*time) * 2 / mesh.skeleton.bones.length;
+                 mesh.skeleton.bones[ i ].position.z = 20*Math.sin(i+2*time) * 2 / mesh.skeleton.bones.length;
+                 mesh.skeleton.bones[ i ].position.y = 10*Math.sin(i+time) * 2 / mesh.skeleton.bones.length;
+                 }
+                 }*/
+                for (var j = 0; j < meshes.length; j++) {
+                    var mesh = meshes[j]
+                    mesh.skeleton.bones[ 2 ].position.x = 20 * Math.sin(j + 3 * time) * 2 / mesh.skeleton.bones.length;
+                    mesh.skeleton.bones[ 2 ].position.y = 10 * Math.sin(j + time) * 2 / mesh.skeleton.bones.length;
+                    mesh.skeleton.bones[ 2 ].position.z = 20 * Math.sin(j + 2 * time) * 2 / mesh.skeleton.bones.length;
+
+                    mesh.skeleton.bones[ 1 ].position.x = 20 * Math.sin(j + 1 + 3 * time) * 2 / mesh.skeleton.bones.length;
+                    mesh.skeleton.bones[ 1 ].position.y = 10 * Math.sin(j + 1 + time) * 2 / mesh.skeleton.bones.length;
+                    mesh.skeleton.bones[ 1 ].position.z = 20 * Math.sin(j + 1 + 2 * time) * 2 / mesh.skeleton.bones.length;
+
+                    mesh.skeleton.bones[ 0 ].position.x = 0
+                    mesh.skeleton.bones[ 0 ].position.y = 0
+                    mesh.skeleton.bones[ 0 ].position.z = 0
+
+                    skeletonHelpers[j].update();
+                }
+                /*mesh.skeleton.bones[1].position.x=0;
+                 mesh.skeleton.bones[1].position.y=0;
+                 mesh.skeleton.bones[1].position.z=0;
+                 mesh.skeleton.bones[2].position.x=10;
+                 mesh.skeleton.bones[2].position.y=10;
+                 mesh.skeleton.bones[2].position.z=10;*/
+                renderer.render(scene, camera);
+            }
+
+            initScene();
+            render();
+
+        </script>
+    </body>
+</html>
