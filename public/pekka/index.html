@@ -82,15 +82,16 @@
 
                 // central object
 
-                var geometry = new THREE.TorusKnotGeometry(0.64, 0.25, 25, 6);
-                var material = new THREE.MeshPhongMaterial({shading: THREE.FlatShading, side: THREE.DoubleSide});
+                var geometry = new THREE.TorusKnotGeometry(0.64, 1, 50, 10);
+                var material = new THREE.MeshToonMaterial({shading: THREE.SmoothShading, side: THREE.DoubleSide});
                 var object = new THREE.Mesh(geometry, material);
+                object.rotation.x = Math.PI/2;
                 scene.add(object);
 
-                // cubes 
+                // cubes
 
                 var group = new THREE.Object3D();
-                var side = 3
+                var side = 2
                 for (var _x = -side; _x <= side; _x++) {
                     for (var _y = -side; _y <= side; _y++) {
                         for (var _z = -side; _z <= side; _z++) {
@@ -120,7 +121,7 @@
             }
 
             function render() {
-                
+
                 // vr
 
                 if (vr) {
@@ -131,9 +132,9 @@
                     effect.render(scene, camera);
                     return;
                 }
-                
+
                 // everything else
-                
+
                 requestAnimationFrame(render);
 
                 controls.update();
