@@ -52,9 +52,9 @@
 
             function init() {
 
-                /*odeo = new Odeo({});
-                 odeo.stopUsingMicrophone();
-                 odeo.playMedia('assets/sound/sept.ogg')*/
+                odeo = new Odeo({});
+                odeo.stopUsingMicrophone();
+                odeo.playMedia('assets/sound/sept.ogg')
 
                 // renderer
 
@@ -193,12 +193,12 @@
             }
 
             function generate() {
-                TweenMax.delayedCall(3,generate)
+                TweenMax.delayedCall(3, generate)
                 var k = Math.random()
                 for (var i = 0; i < lights.length; i++) {
                     var light = lights[i]
                     var c = new THREE.Color()
-                    c.setHSL(k + i / 12, 1, .7)
+                    c.setHSL(k + i / 6, 1, .7)
                     var r = Math.random()
                     var g = Math.random()
                     var b = Math.random()
@@ -218,14 +218,14 @@
             function render() {
                 //group2.rotation.y-=.003
 
-                //odeo.update();
+                odeo.update();
                 //console.log(odeo.frequencyData)
 
-                /*for (var i = 0; i < allObjects.length; i++) {
-                 var m = allObjects[i]
-                 var s = 3 * odeo.frequencyData[i] / 255
-                 m.scale.set(s, s, s)
-                 }*/
+                for (var i = 0; i < allObjects.length; i++) {
+                    var m = allObjects[i]
+                    var s = 3 * odeo.frequencyData[i] / 255
+                    m.scale.set(1, 1, 1 * s)
+                }
 
 
                 /*for (var i=0;i<object.geometry.vertices.length;i++){
