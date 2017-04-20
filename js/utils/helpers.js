@@ -6,9 +6,11 @@ function addEvents() {
 
         controller1 = new THREE.ViveController(0);
         controller1.standingMatrix = vrControls.getStandingMatrix();
+        controller1.castShadow = true;
         scene.add(controller1);
         controller2 = new THREE.ViveController(1);
         controller2.standingMatrix = vrControls.getStandingMatrix();
+        controller2.castShadow = true;
         scene.add(controller2);
         var loader = new THREE.OBJLoader();
         loader.setPath('assets/models/vive-controller/');

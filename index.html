@@ -43,7 +43,7 @@
             var vr = false;
             var object;
 
-            var allObjects = []
+            var allObjects = [], lights = []
 
             init();
             setup();
@@ -60,6 +60,7 @@
                 renderer = new THREE.WebGLRenderer({antialias: true});
                 renderer.setPixelRatio(window.devicePixelRatio);
                 renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.shadowMap.enabled = true;
                 document.body.appendChild(renderer.domElement);
 
                 // scene
@@ -99,33 +100,47 @@
                  
                  var skyBox = new THREE.Mesh(new THREE.CubeGeometry(100, 100, 100), skyBoxMaterial);
                  //scene.add(skyBox);*/
-                var material = new THREE.MeshBasicMaterial({shading:THREE.FlatShading,wireframe:true,side:THREE.DoubleSide});//envMap: getCubeMap(8)
-                var geometry = new THREE.PlaneGeometry(10,10,32,32)
-                og=geometry.clone()
+                //var material = new THREE.MeshBasicMaterial({shading:THREE.FlatShading,wireframe:true,side:THREE.DoubleSide});//envMap: getCubeMap(8)
+                //var geometry = new THREE.PlaneGeometry(10,10,32,32)
+                //og=geometry.clone()
+                var plane = new THREE.Mesh(new THREE.PlaneGeometry(100, 100), new THREE.MeshPhongMaterial({
+                    shading: THREE.FlatShading,
+                    color: 0xFFFFFF
+                    //emissive: 0
+                }));
+                plane.rotation.x = -Math.PI / 2
+                plane.position.y=-3
+                plane.receiveShadow = true;
+                scene.add(plane)
+
+                var loader = new THREE.OBJLoader();
+                loader.setPath('assets/models/');
+                loader.load('monkey_universe.obj', function (object) {
+                    console.log(object)
+                    var material = new THREE.MeshStandardMaterial({});//envMap: getCubeMap(8)
+                    object.children[0].material = material
+                    var material = new THREE.MeshStandardMaterial({});//var material = new THREE.MeshPhongMaterial({envMap: getCubeMap(0)});
+                    object.children[1].material = material
+                    var material = new THREE.MeshStandardMaterial({});//var material = new THREE.MeshPhongMaterial({envMap: getCubeMap(1)});
+                    object.children[2].material = material
+                    var material = new THREE.MeshStandardMaterial({});//var material = new THREE.MeshPhongMaterial({envMap: getCubeMap(2)});
+                    object.children[3].material = material
+                    var material = new THREE.MeshStandardMaterial({});//var material = new THREE.MeshPhongMaterial({envMap: getCubeMap(3)});
+                    object.children[4].material = material
+                    var material = new THREE.MeshStandardMaterial({});//var material = new THREE.MeshPhongMaterial({envMap: getCubeMap(4)});
+                    object.children[5].material = material
+                    
+                    object.children[0].castShadow = true;
+                    object.children[1].castShadow = true;
+                    object.children[2].castShadow = true;
+                    object.children[3].castShadow = true;
+                    object.children[4].castShadow = true;
+                    scene.add(object)
+                });
 
 
-                /*var loader = new THREE.OBJLoader();
-                 loader.setPath('assets/models/');
-                 loader.load('monkey_universe.obj', function (object) {
-                 console.log(object)
-                 var material = new THREE.MeshBasicMaterial({envMap: getCubeMap(8)});
-                 object.children[0].material=material
-                 var material = new THREE.MeshBasicMaterial({envMap: getCubeMap(0)});
-                 object.children[1].material=material
-                 var material = new THREE.MeshBasicMaterial({envMap: getCubeMap(1)});
-                 object.children[2].material=material
-                 var material = new THREE.MeshBasicMaterial({envMap: getCubeMap(2)});
-                 object.children[3].material=material
-                 var material = new THREE.MeshBasicMaterial({envMap: getCubeMap(3)});
-                 object.children[4].material=material
-                 var material = new THREE.MeshBasicMaterial({envMap: getCubeMap(4)});
-                 object.children[5].material=material
-                 scene.add(object)
-                 });*/
-
-
-                object = new THREE.Mesh(geometry, material);
-                scene.add(object);
+                //object = new THREE.Mesh(geometry, material);
+                //scene.add(object);
 
                 // cubes 
 
@@ -168,9 +183,27 @@
 
                 // light
 
-                var light = new THREE.DirectionalLight(0xffffff);
-                light.position.set(-1, 1.5, 0.5);
-                scene.add(light);
+                /*var light = new THREE.DirectionalLight(0xffffff);
+                 light.position.set(-1, 1.5, 0.5);
+                 scene.add(light);*/
+
+                var geom = new THREE.SphereGeometry(.1, 15, 15)
+                for (var i = 0; i < 3; i++) {
+                    var c = new THREE.Color()
+                    c.setHSL(i / 12, 1, .7)
+                    var light = new THREE.PointLight(c, .5, 3000);
+                    light.castShadow = true;
+                    light.shadow.bias = 0.1;
+                    light.shadow.mapSize.width = 1024;
+                    light.shadow.mapSize.height = 1024;
+                    //scene.add(light);
+
+                    var sphere = new THREE.Mesh(geom, new THREE.MeshBasicMaterial({color: c}))
+                    sphere.add(light)
+                    scene.add(sphere)
+
+                    lights.push(sphere)
+                }
             }
 
             function render() {
@@ -183,16 +216,26 @@
                  var s = 3 * odeo.frequencyData[i] / 255
                  m.scale.set(s, s, s)
                  }*/
-        
-                
+
+
                 /*for (var i=0;i<object.geometry.vertices.length;i++){
-                    var v=object.geometry.vertices[i]
-                    var f=odeo.frequencyData[i%128]/256
-                    v.copy(og.vertices[i])
-                    v.z+=f
-                    //v.multiplyScalar(1+f)
+                 var v=object.geometry.vertices[i]
+                 var f=odeo.frequencyData[i%128]/256
+                 v.copy(og.vertices[i])
+                 v.z+=f
+                 //v.multiplyScalar(1+f)
+                 }
+                 object.geometry.verticesNeedUpdate=true;*/
+                var time = Date.now() * 0.00001;
+
+                for (var i = 0; i < lights.length; i++) {
+                    var light = lights[i]
+                    light.position.set(
+                            Math.sin(time * 10 + Math.PI * 2 * i / 3) * 5,
+                            Math.sin(time * 10 * 2 + Math.PI * 2 * i / 3) * 3+3,
+                            Math.cos(time * 10 + Math.PI * 2 * i / 3) * 5
+                            )
                 }
-                object.geometry.verticesNeedUpdate=true;*/
 
                 // vr
 
