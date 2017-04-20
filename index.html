@@ -80,7 +80,7 @@
 
                 // central object
                 var cubeShader = THREE.ShaderLib['cube'];
-                cubeShader.uniforms['tCube'].value = getCubeMap(1);
+                cubeShader.uniforms['tCube'].value = getCubeMap(3);
 
                 var skyBoxMaterial = new THREE.ShaderMaterial({
                     fragmentShader: cubeShader.fragmentShader,
@@ -91,32 +91,40 @@
                 });
 
                 var skyBox = new THREE.Mesh(new THREE.CubeGeometry(100, 100, 100), skyBoxMaterial);
-
                 scene.add(skyBox);
 
                 var geometry = new THREE.TorusGeometry(1., .75, 25, 25);
-                var material = new THREE.MeshBasicMaterial({
+                var material = new THREE.MeshPhongMaterial({
                     //shading: THREE.FlatShading, 
-                    envMap:getCubeMap(1),
+                    //envMap: getCubeMap(5),
                     side: THREE.DoubleSide
                 });
-                var object = new THREE.Mesh(geometry, material);
-                object.rotation.x = Math.PI / 2
-                object.position.y=1.5
-                scene.add(object);
+                /*var object = new THREE.Mesh(geometry, material);
+                 object.rotation.x = Math.PI / 2
+                 object.position.y = 1.5
+                 scene.add(object);*/
 
                 // cubes 
 
                 var group = new THREE.Object3D();
-                var side = 10
+                var side = 40
                 for (var _x = -side; _x <= side; _x++) {
-                    for (var _y = -side; _y <= side; _y++) {
+                    //for (var _y = -side; _y <= side; _y++) {
                         for (var _z = -side; _z <= side; _z++) {
-                            var geo = new THREE.BoxGeometry(.03, .5, .03)
+                        
+                        var _y=0
+
+                            var s = noise.simplex3(_x/5, _y/5, _z/5);
+
+                            var cubeSize = (s / 2 + .5)//*2
+
+                            var geo = new THREE.BoxGeometry(cubeSize,cubeSize*5,cubeSize)
                             var mesh = new THREE.Mesh(geo, material)
                             mesh.position.set(_x, _y, _z)
+                            mesh.rotation.x=s
+
                             group.add(mesh);
-                        }
+                        //}
                     }
                 }
 
