@@ -137,12 +137,13 @@
 
                 // camera
 
-                camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
+                camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 600);
                 camera.position.set(0, 0, 30);
 
                 // controls
 
                 controls = new THREE.OrbitControls(camera);
+                controls.maxDistance = 100;
                 controls.autoRotate = true;
 
                 // events
@@ -151,6 +152,18 @@
             }
 
             function setup() {
+
+                var cubeShader = THREE.ShaderLib['cube'];
+                cubeShader.uniforms['tCube'].value = getCubeMap(3);
+                var skyBoxMaterial = new THREE.ShaderMaterial({
+                    fragmentShader: cubeShader.fragmentShader,
+                    vertexShader: cubeShader.vertexShader,
+                    uniforms: cubeShader.uniforms,
+                    depthWrite: false,
+                    side: THREE.BackSide
+                });
+                var skyBox = new THREE.Mesh(new THREE.CubeGeometry(300, 300, 300), skyBoxMaterial);
+                scene.add(skyBox);
 
                 // central object
 
@@ -166,9 +179,9 @@
                 for (var _x = -side; _x <= side; _x+=10) {
                     for (var _y = -side; _y <= side; _y+=10) {
                         for (var _z = -side; _z <= side; _z+=10) {
-                            var geo = new THREE.BoxGeometry(1., 1., 1., 1, 1, 1)
-                            var mesh = new THREE.Mesh(geo, material)
-                            mesh.position.set(_x, _y, _z)
+                            var geo = new THREE.BoxGeometry(1., 1., 1., 1, 1, 1);
+                            var mesh = new THREE.Mesh(geo, material);                            
+                            mesh.position.set(_x, _y, _z);
                             group.add(mesh);
                         }
                     }
@@ -222,6 +235,7 @@
                 });
 
                 var creatureObj = new Creature(0, 0, 0, 5, particleShaderMaterial, rawShaderMaterial, 20);
+                creatureObj.switchState();
                 //creatureObj.switchState();
                 creatures.push(creatureObj);
                 scene.add( creatureObj.creatureHolder);
@@ -233,8 +247,10 @@
                 for (var _x = -side; _x <= side; _x+=side) {
                     for (var _y = -side; _y <= side; _y+=side) {
                         for (var _z = -side; _z <= side; _z+=side) {
-                            mesh = new Creature(_x, _y, _z, 5, particleShaderMaterial, rawShaderMaterial, 0);
-                            group.add(mesh.creatureHolder);
+                            if(_x!=0){
+                                mesh = new Creature(_x, _y, _z, 5, particleShaderMaterial, rawShaderMaterial, 0);
+                                group.add(mesh.creatureHolder);
+                            }
                         }
                     }
                 }
@@ -244,11 +260,11 @@
 
             function startParticlesAnimation(amplitude) {   
                 var atween = new TWEEN.Tween(amplitude)
-                        .to({value: 0.0}, 7500)
+                        .to({value: 0.0}, 5000)
                         .delay(1000)
                         .easing(TWEEN.Easing.Back.InOut);
                 var btween = new TWEEN.Tween(amplitude)
-                        .to({value: 1.0}, 7500)
+                        .to({value: 1.0}, 5000)
                         .delay(1000)
                         .easing(TWEEN.Easing.Back.InOut);
                 atween.chain(btween);
