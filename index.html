@@ -41,6 +41,7 @@
             var controller1, controller2;
             var mobile = false;
             var vr = false;
+            var object;
 
             var allObjects = []
 
@@ -51,8 +52,8 @@
             function init() {
 
                 odeo = new Odeo({});
-                odeo.stopUsingMicrophone();
-                odeo.playMedia('assets/sound/sept.ogg')
+                 odeo.stopUsingMicrophone();
+                 odeo.playMedia('assets/sound/sept.ogg')
 
                 // renderer
 
@@ -98,8 +99,9 @@
                  
                  var skyBox = new THREE.Mesh(new THREE.CubeGeometry(100, 100, 100), skyBoxMaterial);
                  //scene.add(skyBox);*/
-
-                var geometry = new THREE.TorusGeometry(1., .75, 25, 25);
+                var material = new THREE.MeshBasicMaterial({shading:THREE.FlatShading,envMap: getCubeMap(9),side:THREE.DoubleSide});//envMap: getCubeMap(8)
+                var geometry = new THREE.SphereGeometry(2., 25, 25);
+                og=geometry.clone()
 
 
                 /*var loader = new THREE.OBJLoader();
@@ -122,29 +124,27 @@
                  });*/
 
 
-                /*var object = new THREE.Mesh(geometry, material);
-                 object.rotation.x = Math.PI / 2
-                 object.position.y = 1.5
-                 scene.add(object);*/
+                object = new THREE.Mesh(geometry, material);
+                scene.add(object);
 
                 // cubes 
 
-                var material = new THREE.MeshBasicMaterial({envMap: getCubeMap(8), shading: THREE.FlatShading});
-                var group = new THREE.Object3D();
-                var side = 128
-                for (var _x = 0; _x < side; _x++) {
-                    var geo = new THREE.TetrahedronGeometry(.5)
-                    var mesh = new THREE.Mesh(geo, material)
-                    mesh.position.set((Math.random() - .5) * 5, (Math.random() - .5) * 5, (Math.random() - .5) * 5)
-                    mesh.rotation.set(Math.random() - .5, Math.random() - .5, Math.random() - .5)
-
-                    group.add(mesh);
-                    scene.add(mesh)
-
-                    allObjects.push(mesh)
-
-                    //}
-                }
+                /*var material = new THREE.MeshBasicMaterial({envMap: getCubeMap(8), shading: THREE.FlatShading});
+                 var group = new THREE.Object3D();
+                 var side = 128
+                 for (var _x = 0; _x < side; _x++) {
+                 var geo = new THREE.TetrahedronGeometry(.5)
+                 var mesh = new THREE.Mesh(geo, material)
+                 mesh.position.set((Math.random() - .5) * 5, (Math.random() - .5) * 5, (Math.random() - .5) * 5)
+                 mesh.rotation.set(Math.random() - .5, Math.random() - .5, Math.random() - .5)
+                 
+                 group.add(mesh);
+                 scene.add(mesh)
+                 
+                 allObjects.push(mesh)
+                 
+                 //}
+                 }*/
 
                 // merge
 
@@ -178,11 +178,20 @@
                 odeo.update();
                 //console.log(odeo.frequencyData)
 
-                for (var i = 0; i < allObjects.length; i++) {
-                    var m = allObjects[i]
-                    var s = 3 * odeo.frequencyData[i] / 255
-                    m.scale.set(s, s, s)
+                /*for (var i = 0; i < allObjects.length; i++) {
+                 var m = allObjects[i]
+                 var s = 3 * odeo.frequencyData[i] / 255
+                 m.scale.set(s, s, s)
+                 }*/
+        
+                
+                for (var i=0;i<object.geometry.vertices.length;i++){
+                    var v=object.geometry.vertices[i]
+                    var f=odeo.frequencyData[i%128]/256
+                    v.copy(og.vertices[i])
+                    v.multiplyScalar(1+f)
                 }
+                object.geometry.verticesNeedUpdate=true;
 
                 // vr
 
