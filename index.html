@@ -79,26 +79,43 @@
             function setup() {
 
                 /*// central object
-                var cubeShader = THREE.ShaderLib['cube'];
-                cubeShader.uniforms['tCube'].value = getCubeMap(8);
-
-                var skyBoxMaterial = new THREE.ShaderMaterial({
-                    fragmentShader: cubeShader.fragmentShader,
-                    vertexShader: cubeShader.vertexShader,
-                    uniforms: cubeShader.uniforms,
-                    depthWrite: false,
-                    side: THREE.BackSide
-                });
-
-                var skyBox = new THREE.Mesh(new THREE.CubeGeometry(100, 100, 100), skyBoxMaterial);
-                //scene.add(skyBox);*/
+                 var cubeShader = THREE.ShaderLib['cube'];
+                 cubeShader.uniforms['tCube'].value = getCubeMap(8);
+                 
+                 var skyBoxMaterial = new THREE.ShaderMaterial({
+                 fragmentShader: cubeShader.fragmentShader,
+                 vertexShader: cubeShader.vertexShader,
+                 uniforms: cubeShader.uniforms,
+                 depthWrite: false,
+                 side: THREE.BackSide
+                 });
+                 
+                 var skyBox = new THREE.Mesh(new THREE.CubeGeometry(100, 100, 100), skyBoxMaterial);
+                 //scene.add(skyBox);*/
 
                 var geometry = new THREE.TorusGeometry(1., .75, 25, 25);
-                var material = new THREE.MeshBasicMaterial({
-                    //shading: THREE.FlatShading, 
-                    envMap: getCubeMap(8),
-                    side: THREE.DoubleSide
+                
+
+                var loader = new THREE.OBJLoader();
+                loader.setPath('assets/models/');
+                loader.load('monkey_universe.obj', function (object) {
+                    console.log(object)
+                    var material = new THREE.MeshBasicMaterial({envMap: getCubeMap(8)});
+                    object.children[0].material=material
+                    var material = new THREE.MeshBasicMaterial({envMap: getCubeMap(0)});
+                    object.children[1].material=material
+                    var material = new THREE.MeshBasicMaterial({envMap: getCubeMap(1)});
+                    object.children[2].material=material
+                    var material = new THREE.MeshBasicMaterial({envMap: getCubeMap(2)});
+                    object.children[3].material=material
+                    var material = new THREE.MeshBasicMaterial({envMap: getCubeMap(3)});
+                    object.children[4].material=material
+                    var material = new THREE.MeshBasicMaterial({envMap: getCubeMap(4)});
+                    object.children[5].material=material
+                    scene.add(object)
                 });
+
+
                 /*var object = new THREE.Mesh(geometry, material);
                  object.rotation.x = Math.PI / 2
                  object.position.y = 1.5
@@ -106,45 +123,45 @@
 
                 // cubes 
 
-                var group = new THREE.Object3D();
-                var side = 5
-                for (var _x = -side; _x <= side; _x++) {
-                    for (var _y = -side; _y <= side; _y++) {
-                        for (var _z = -side; _z <= side; _z++) {
-
-
-
-                            var s = noise.simplex3(_x/5, _y/5, _z/5);
-
-                            //var cubeSize = (s / 2 + .5)//*2
-
-                            var geo = new THREE.BoxGeometry(s,s,s)
-                            var mesh = new THREE.Mesh(geo, material)
-                            mesh.position.set(_x, _y, _z)
-
-                            group.add(mesh);
-                        }
-                    }
-                }
-
-                // merge
-
-                var geom = new THREE.Geometry()
-                for (var i = 0; i < group.children.length; i++) {
-                    group.children[i].updateMatrix();
-                    geom.merge(group.children[i].geometry, group.children[i].matrix);
-                }
-
-
-                for (var i = 0; i < geom.vertices.length; i++) {
-                    var v = geom.vertices[i];
-                    v.x += (Math.random() - .5)/3
-                    v.y += (Math.random() - .5)/3
-                    v.z += (Math.random() - .5)/3
-                }
-                console.log(geom)
-                group = new THREE.Mesh(geom, material);
-                scene.add(group)
+                /*var group = new THREE.Object3D();
+                 var side = 5
+                 for (var _x = -side; _x <= side; _x++) {
+                 for (var _y = -side; _y <= side; _y++) {
+                 for (var _z = -side; _z <= side; _z++) {
+                 
+                 
+                 
+                 var s = noise.simplex3(_x/5, _y/5, _z/5);
+                 
+                 //var cubeSize = (s / 2 + .5)//*2
+                 
+                 var geo = new THREE.BoxGeometry(s,s,s)
+                 var mesh = new THREE.Mesh(geo, material)
+                 mesh.position.set(_x, _y, _z)
+                 
+                 group.add(mesh);
+                 }
+                 }
+                 }
+                 
+                 // merge
+                 
+                 var geom = new THREE.Geometry()
+                 for (var i = 0; i < group.children.length; i++) {
+                 group.children[i].updateMatrix();
+                 geom.merge(group.children[i].geometry, group.children[i].matrix);
+                 }
+                 
+                 
+                 for (var i = 0; i < geom.vertices.length; i++) {
+                 var v = geom.vertices[i];
+                 v.x += (Math.random() - .5)/3
+                 v.y += (Math.random() - .5)/3
+                 v.z += (Math.random() - .5)/3
+                 }
+                 console.log(geom)
+                 group = new THREE.Mesh(geom, material);
+                 scene.add(group)*/
 
 
                 // light
