@@ -35,9 +35,7 @@
 
         <script src="js/third-party/TweenMax.min.js"></script>
         <script src="js/third-party/Odeo.js"></script>
-        <script src="js/third-party/Tone.min.js"></script>
-
-        <script src="js/third-party/perlin.js"></script>        
+        <script src="js/third-party/perlin.js"></script>
 
         <script src="js/utils/helpers.js"></script>
 
@@ -52,13 +50,6 @@
             var rings;
 
             var p_grid,p_group;
-            var box_mesh;
-            //--------------//Tone stuff
-            var synth;
-            var loop;
-            var scale = ['C3', 'D3', 'Eb3', 'F3', 'G3', 'A3', 'Bb3', 'C4', 'D4', 'Eb4', 'F4', 
-                'G4', 'A4', 'Bb4', 'C5', 'D5'];
-            //------------------------//
 
             init();
             setup();
@@ -109,30 +100,6 @@
 
             function init() {
 
-                // Tone stuff
-                synth = new Tone.PolySynth(6, Tone.Synth, {
-                    "oscillator" : {
-                        "partials" : [0, 2, 3, 4],
-                    }
-                }).toMaster();
-
-                loop = new Tone.Sequence(function (time, col) {
-
-                    box_mesh.position.set(0, 0,(col-8)/3)
-
-                    var row = 0;
-                    for (var i = col * 16; i < (col * 16) + 16; i++) {
-                        if (particles[i].s > 1) { 
-                            console.log("BHJEKBHLSA")                   
-                            synth.triggerAttackRelease(scale[row], '8n', time);
-                        }
-                        row++;
-                    };
-
-                }, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], '16n');
-                loop.start();
-                Tone.Transport.start();
-
                 // renderer
 
                 renderer = new THREE.WebGLRenderer({antialias: true});
@@ -163,6 +130,19 @@
                 var loader = new THREE.OBJLoader();
                 // loader.setPath("/assets");
 
+                // loader.load('Rings_01.obj'),    function ( obj ) {
+                //     //add the loaded object to the scene
+                //     scene.add( obj );
+                // }//, function (object) {
+                //}
+                //     // var material = new THREE.MeshBasicMaterial({envMap: getCubeMap(0)});
+                //     var material = new THREE.MeshPhongMaterial({shading: THREE.FlatShading, side: THREE.DoubleSide});
+                //     object.children[0].material=material
+                //     scene.add(object)
+                // }
+
+                // vtx = new Vtx();
+                // console.log("VTX : ", vtx);
                 loader.load(
                     // resource URL
                     "assets/models/Rings_01.obj",
@@ -212,15 +192,39 @@
                 // cubes 
 
                 group = new THREE.Object3D();
+                // var side = 9
+                // for (var _x = -side; _x <= side; _x++) {
+                //     for (var _y = -side; _y <= side; _y++) {
+                //         for (var _z = -side; _z <= side; _z++) {
+                //             // var geo = new THREE.BoxGeometry(.1, .1, .1, 1, 1, 1)
+                //             var geo = new THREE.BoxGeometry(Math.random()*0.2, Math.random()*2.0, Math.random()*0.2, 1, 1, 1)
+                //             var mesh = new THREE.Mesh(geo, material)
+                //             mesh.position.set(_x, _y, _z)
+                //             group.add(mesh);
+                //         }
+                //     }
+                // }
 
+                // merge
+
+                // var geom = new THREE.Geometry()
+                // for (var i = 0; i < group.children.length; i++) {
+                //     group.children[i].updateMatrix();
+                //     geom.merge(group.children[i].geometry, group.children[i].matrix);
+                // }
+                // group = new THREE.Mesh(geom, material);
+                // scene.add(group)
+
+
+                // Object group
                 p_group = new THREE.Object3D();
 
-                var side = 8  
-                var size = 0.5/side;
+                var side = 8   
+                var size = 0.1/side;
                 particles = [];
                 for (var _x = -side; _x <= side; _x++) {
-                    // for (var _y = -side; _y <= side; _y++) {
-                    for (var _y = 0; _y <= 0; _y++) {
+                    for (var _y = -side; _y <= side; _y++) {
+                    //for (var _y = 0; _y <= 0; _y++) {
                         for (var _z = -side; _z <= side; _z++) {
                             // var geo = new THREE.BoxGeometry(.1, .1, .1, 1, 1, 1)
                             var geo = new THREE.BoxGeometry(size,size,size, 1, 1, 1)
@@ -236,11 +240,12 @@
                     }
                 }
 
-                var box_marker = new THREE.BoxGeometry(8,1,1, 1, 1, 1)
-                box_mesh   = new THREE.Mesh(box_marker, material)
-                
-
-                scene.add(box_mesh)
+                // var geom = new THREE.Geometry()
+                // for (var i = 0; i < group.children.length; i++) {
+                //     group.children[i].updateMatrix();
+                //     geom.merge(group.children[i].geometry, group.children[i].matrix);
+                // }
+                // group = new THREE.Mesh(geom, material);
                 scene.add(p_group);
 
                 // light
@@ -263,12 +268,14 @@
                 
                 // vr
 
+                var t = clock.getElapsedTime();
 
+                // var rot = delta % (Math.pi*2.0);
 
-                var t = clock.getElapsedTime()*1.0;
                 var cnt = p_group.children.length;
                 
                 effector.position.set(Math.sin(t) * 2.5,0,Math.cos(t)*2.5);
+
                 var ep = new THREE.Vector3();
 
                 ep = effector.position;
@@ -305,20 +312,35 @@
                     node.scale.z =  1.0 + particles[i].s;
 
 
+                    // if( ep.distanceTo( np ) < 10){
+                    // console.log(controller1)
+
                     if(vr){
                         if( controller1.position.clone().multiplyScalar(10).distanceTo( np ) < 0.25){
-                            // synth.triggerAttackRelease('C4', '8n')
                             particles[i].p = np.add(new THREE.Vector3(0,1,0)); 
                         } 
                     }
+
                     else{
                         if( ep.distanceTo( np ) < 0.25){
-                            // synth.triggerAttackRelease('C4', '8n')
                             particles[i].p = np.add(new THREE.Vector3(0,1,0));
                         }
                     }
-                }
 
+                    // node.position.set(node.position.clone().add(new THREE.Vector3(0,s,0) ));
+                    // console.log(np);
+                    // p_group.children[i].position.y += s;
+                    // p_group.children[i].scale.y = s*10;
+                    // p_group.children[i].scale.y = vtx.sz;
+                    // step = ((Math.pi*2.0)/ cnt ) * 
+                }
+                // console.log(particles[0].s);
+                
+                // }
+
+
+
+                // group.rotation.y += 0.01;
 
                 if (vr) {
                     vrControls.update();
