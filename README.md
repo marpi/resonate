@@ -1,8 +1,8 @@
 ## Resonate
 
-[![Building generative VR worlds](/title.png "Building generative VR worlds")](http://resonate.io/2017/workshop/building-generative-vr-worlds/)
+[![Building generative VR worlds](/main_title.png "Building generative VR worlds")](http://resonate.io/2017/workshop/building-generative-vr-worlds/)
 
-[![Building generative VR worlds](/public/main_title.jpg "Building generative VR worlds")](https://classes.marpi.pl/resonate/)
+[![Building generative VR worlds](/og_image.jpg "Building generative VR worlds")](https://classes.marpi.pl/resonate/)
 [![Building generative VR worlds](/public/stella.jpg "Building generative VR worlds")](https://classes.marpi.pl/resonate/public/stella/)
 [![Building generative VR worlds](/public/tibor.jpg "Building generative VR worlds")](https://classes.marpi.pl/resonate/public/tibor/)
 [![Building generative VR worlds](/public/pekka.jpg "Building generative VR worlds")](https://classes.marpi.pl/resonate/public/pekka/)
