@@ -49,7 +49,7 @@
             function init() {
                 odeo = new Odeo({});
                  odeo.stopUsingMicrophone();
-                 odeo.playMedia('assets/sound/jewel.ogg')
+                 odeo.playMedia('assets/sound/rire.wav')
                 //   odeo.playMedia('assets/sound/rire.ogg')
                 // renderer
                 renderer = new THREE.WebGLRenderer({antialias: true});
@@ -87,9 +87,9 @@
                  loader.load('assets/models/bottle.obj', function (localObject) {
                  //console.log(object)
                 // var material = new THREE.MeshBasicMaterial({envMap: getCubeMap(8),map:new THREE.TextureLoader().load( "assets/textures/bottle1.jpg" )});
-                 var material = new THREE.MeshBasicMaterial({envMap: getCubeMap(4)});
+                 var material = new THREE.MeshBasicMaterial({envMap: getCubeMap(1)});
                   // var loader = new THREE.TextureLoader();
-                  //   var texture1 = loader.load('assets/textures/bottle1.jpg');
+                  //   var texture1 = loader.load('assets/textures/bottle1.jpg1);
                   //   var texture2 = loader.load('assets/textures/bottle2.jpg');
                   // var material = new THREE.MeshBasicMaterial({envMap: getCubeMap(8),map:new THREE.TextureLoader().load( "assets/textures/bottle1.jpg","assets/textures/bottle2.jpg" )});
                   object=localObject.children[0]
@@ -162,10 +162,12 @@
                 if(object){
                     for (var i=0;i<object.geometry.vertices.length;i++){
                         var v=object.geometry.vertices[i]
-                        var f=odeo.frequencyData[i%128]/254
+                        var f=odeo.frequencyData[i%120]/504
                         //var f=odeo.frequencyData[i%128]/256
                         v.copy(og.vertices[i])
                         v.y+=f
+                        v.x+=f/10
+                        v.z+=f/10
                         //v.multiplyScalar(1+f)
                     }
                     object.geometry.verticesNeedUpdate=true;
