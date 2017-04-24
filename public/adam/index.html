@@ -52,6 +52,8 @@
             var vr = false;
             var object,group;
 
+            var grid_cnt = 17;
+            var dist     = 0.2; 
             var clock ;
             var rings;
 
@@ -60,8 +62,8 @@
             //--------------//Tone stuff
             var synth;
             var loop;
-            var scale = ['C3', 'D3', 'Eb3', 'F3', 'G3', 'A3', 'Bb3', 'C4', 'D4', 'Eb4', 'F4', 
-                'G4', 'A4', 'Bb4', 'C5', 'D5'];
+            var scale = ['C2', 'D2', 'Eb2', 'F2', 'G2', 'A2', 'Bb2', 'C3', 'D3', 'Eb3', 'F3', 
+                'G3', 'A3', 'Bb3', 'C4', 'D4','Eb4'];
             //------------------------//
 
             init();
@@ -116,26 +118,58 @@
                 // StartAudioContext(Tone.context, "#playButton")
 
                 // Tone stuff
-                synth = new Tone.PolySynth(6, Tone.Synth, {
-                    "oscillator" : {
-                        "partials" : [0, 2, 3, 4],
-                    }
-                }).toMaster();
+                // synth = new Tone.PolySynth(6, Tone.Synth, {
+                //     "oscillator" : {
+                //         "partials" : [0, 2, 3, 4],
+                //     }
+                // }).toMaster();
 
-                loop = new Tone.Sequence(function (time, col) {
+                var synth = new Tone.Synth({
+                    oscillator : {
+                    type : 'fmsquare',
+                    modulationType : 'sawtooth',
+                    modulationIndex : 5,
+                    harmonicity: 1.0
+                  },
+                  envelope : {
+                    attack : 0.001,
+                    decay : 0.1,
+                    sustain: 0.1,
+                    release: 0.1
+                  }
+                }).toMaster()
 
-                    box_mesh.position.set(0, 0,(col-8)/3)
+
+                loop = new Tone.Loop(function (time) {
+
+                    // console.log("Time : , ", time)
 
                     var row = 0;
-                    for (var i = col * 16; i < (col * 16) + 16; i++) {
-                        if (particles[i].s > 1) { 
-                            console.log("BHJEKBHLSA")                   
-                            synth.triggerAttackRelease(scale[row], '8n', time);
-                        }
-                        row++;
+                    var i = 0;
+                    for (var x = 0 ; x < grid_cnt; x++) {
+                        for (var y = 0 ; y < grid_cnt; y++) {
+                            for (var z = 0 ; z < grid_cnt; z++) {
+
+                                if (particles[i].s > 55) { 
+                                    // console.log(y)
+                                    synth.triggerAttackRelease(scale[y]);
+                                    synth.set({
+                                    "oscillator" : {
+                                        // "modulationIndex" : -time*1000
+                                        "harmonicity" : ( (y) *0.5 )
+                                        },
+                                        "envelope" : {
+                                    // "decay" : (5.0/16) * (time % 16)
+                                        }
+                                    });
+                                }
+                            i +=1;      
+                            } 
+                       }
+                        
                     };
 
-                }, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], '16n');
+                }, "32n");
                 loop.start();
                 Tone.Transport.start();
 
@@ -228,11 +262,13 @@
                 var size = 0.5/side;
                 particles = [];
                 for (var _x = -side; _x <= side; _x++) {
-                    // for (var _y = -side; _y <= side; _y++) {
-                    for (var _y = 0; _y <= 0; _y++) {
+                    console.log(_x)
+                    for (var _y = -side; _y <= side; _y++) {
+                    // for (var _y = 0; _y <= 0; _y++) {
                         for (var _z = -side; _z <= side; _z++) {
                             // var geo = new THREE.BoxGeometry(.1, .1, .1, 1, 1, 1)
-                            var geo = new THREE.BoxGeometry(size,size,size, 1, 1, 1)
+                            var geo      = new THREE.TetrahedronGeometry(0.005, 1);
+                            // var geo = new THREE.BoxGeometry(size,size,size, 1, 1, 1)
                             var mesh = new THREE.Mesh(geo, material)
                             mesh.position.set(_x, _y, _z)
                             p_group.add(mesh);
@@ -249,7 +285,7 @@
                 box_mesh   = new THREE.Mesh(box_marker, wire_mat)
                 
 
-                scene.add(box_mesh)
+                
                 scene.add(p_group);
 
                 // light
@@ -272,12 +308,17 @@
                 
                 // vr
 
+                // console.log("Particles : ", particles.length)
+                // console.log("P_Group : ", p_group.children.length)
 
 
-                var t = clock.getElapsedTime()*1.0;
+                var t = clock.getElapsedTime()*0.5;
                 var cnt = p_group.children.length;
+
+                var ey = noise.simplex3(t*2.5,0,0);
+                // console.log(ey)
                 
-                effector.position.set(Math.sin(t) * 2.5,0,Math.cos(t)*2.5);
+                effector.position.set(Math.sin(t) * 2.5,ey,Math.cos(t)*2.5);
                 var ep = new THREE.Vector3();
 
                 ep = effector.position;
@@ -293,13 +334,13 @@
                     var s = noise.simplex3(x+t/5, y/5, z/5);
 
                     if(vr){
-                        if( controller1.position.clone().multiplyScalar(10).distanceTo( particles[i].p ) < 0.25){
+                        if( controller1.position.clone().multiplyScalar(10).distanceTo( particles[i].p ) < dist){
                             particles[i].s = 60.0;
                         }
                     }
                     else{
 
-                        if( ep.distanceTo( particles[i].p ) < 0.25){
+                        if( ep.distanceTo( particles[i].p ) < dist){
                             particles[i].s = 60.0;
                         }
                     }
@@ -315,13 +356,13 @@
 
 
                     if(vr){
-                        if( controller1.position.clone().multiplyScalar(10).distanceTo( np ) < 0.25){
+                        if( controller1.position.clone().multiplyScalar(10).distanceTo( np ) < dist){
                             // synth.triggerAttackRelease('C4', '8n')
                             particles[i].p = np.add(new THREE.Vector3(0,1,0)); 
                         } 
                     }
                     else{
-                        if( ep.distanceTo( np ) < 0.25){
+                        if( ep.distanceTo( np ) < dist){
                             // synth.triggerAttackRelease('C4', '8n')
                             particles[i].p = np.add(new THREE.Vector3(0,1,0));
                         }
