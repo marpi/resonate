@@ -57,8 +57,10 @@
             var clock ;
             var rings;
 
+
             var p_grid,p_group;
             var box_mesh;
+            var s_max = 40;
             //--------------//Tone stuff
             var synth;
             var loop;
@@ -150,7 +152,7 @@
                         for (var y = 0 ; y < grid_cnt; y++) {
                             for (var z = 0 ; z < grid_cnt; z++) {
 
-                                if (particles[i].s > 55) { 
+                                if (particles[i].s > s_max-2) { 
                                     // console.log(y)
                                     synth.triggerAttackRelease(scale[y]);
                                     synth.set({
@@ -272,7 +274,7 @@
                             var mesh = new THREE.Mesh(geo, material)
                             mesh.position.set(_x, _y, _z)
                             p_group.add(mesh);
-                            var t = new THREE.Vector3(_x/3,_y/3,_z/3);
+                            var t = new THREE.Vector3(_x/5,(_y/5) + (side/5),_z/5);
                             var p = new THREE.Vector3(0,100,0);
                             p.add(t);
                             particles.push(new Vtx(p,t,1.0));
@@ -319,7 +321,7 @@
                 var ey = noise.simplex3(t*2.5,0,0);
                 // console.log(ey)
                 
-                effector.position.set(Math.sin(t) * 2.5,ey,Math.cos(t)*2.5);
+                effector.position.set(Math.sin(t) * 2,ey,Math.cos(t)*2);
                 var ep = new THREE.Vector3();
 
                 ep = effector.position;
@@ -337,14 +339,14 @@
                     if(vr){
                         if( controller1.position.clone().multiplyScalar(1).distanceTo( particles[i].p ) < dist){
                             console.log("! : ",i)
-                            particles[i].s = 60.0;
+                            particles[i].s = s_max;
                         }
                     }
                     else{
 
                         if( ep.distanceTo( particles[i].p ) < dist){
                             console.log("! : ",i)
-                            particles[i].s = 60.0;
+                            particles[i].s = s_max;
                         }
                     }
 
@@ -358,19 +360,19 @@
                     node.scale.z =  1.0 + particles[i].s;
 
 
-                    if(vr){
-                        if( controller1.position.clone().multiplyScalar(1).distanceTo( np ) < dist){
+                    // if(vr){
+                    //     if( controller1.position.clone().multiplyScalar(1).distanceTo( np ) < dist){
 
-                            // synth.triggerAttackRelease('C4', '8n')
-                            particles[i].p = np.add(new THREE.Vector3(0,1,0)); 
-                        } 
-                    }
-                    else{
-                        if( ep.distanceTo( np ) < dist){
-                            // synth.triggerAttackRelease('C4', '8n')
-                            particles[i].p = np.add(new THREE.Vector3(0,1,0));
-                        }
-                    }
+                    //         // synth.triggerAttackRelease('C4', '8n')
+                    //         particles[i].p = np.add(new THREE.Vector3(0,1,0)); 
+                    //     } 
+                    // }
+                    // else{
+                    //     if( ep.distanceTo( np ) < dist){
+                    //         // synth.triggerAttackRelease('C4', '8n')
+                    //         particles[i].p = np.add(new THREE.Vector3(0,1,0));
+                    //     }
+                    // }
                 }
 
 
