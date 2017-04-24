@@ -306,6 +306,7 @@
 
             function render() {
                 
+
                 // vr
 
                 // console.log("Particles : ", particles.length)
@@ -356,7 +357,8 @@
 
 
                     if(vr){
-                        if( controller1.position.clone().multiplyScalar(10).distanceTo( np ) < dist){
+                        if( controller1.position.clone().multiplyScalar(1).distanceTo( np ) < dist){
+
                             // synth.triggerAttackRelease('C4', '8n')
                             particles[i].p = np.add(new THREE.Vector3(0,1,0)); 
                         } 
@@ -376,6 +378,8 @@
                     controller2.update();
                     effect.requestAnimationFrame(render);
                     effect.render(scene, camera);
+                    console.log("Controller position : ",controller1.position)
+                
                     return;
                 }
                 
@@ -388,6 +392,11 @@
                     camera.position.set(0, 0, 0)
                     camera.translateZ(5);
                 }
+
+
+                console.log("Effector   position : ",effector.position)
+
+
                 renderer.render(scene, camera);
 
             }
