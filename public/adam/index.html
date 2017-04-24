@@ -335,13 +335,15 @@
                     var s = noise.simplex3(x+t/5, y/5, z/5);
 
                     if(vr){
-                        if( controller1.position.clone().multiplyScalar(10).distanceTo( particles[i].p ) < dist){
+                        if( controller1.position.clone().multiplyScalar(1).distanceTo( particles[i].p ) < dist){
+                            console.log("! : ",i)
                             particles[i].s = 60.0;
                         }
                     }
                     else{
 
                         if( ep.distanceTo( particles[i].p ) < dist){
+                            console.log("! : ",i)
                             particles[i].s = 60.0;
                         }
                     }
