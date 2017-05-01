@@ -89,7 +89,7 @@
             var object_scale = 0.0
             var inc          = 0
             var grid_cnt     = 12
-            var grid_size    = 0.25
+            var grid_size    = 0.2
             var trigger_dist = 0.15
             //------------------------------------------------------//
             //------------------------------------------------------//
@@ -153,7 +153,7 @@
                     // if (!pop.active) {;
                     //     pop.trigger = true
                     //     pop.length  = al
-                    //     synth.triggerAttackRelease( [ "F4" ],"8n")
+                        synth.triggerAttackRelease( [ "F4" ],"8n")
                     // }
                     // pop.update(clock.getElapsedTime())
                     // scale = pop.ap
@@ -187,7 +187,7 @@
                       
                                             note_ref = octave[ _x ] + _y.toString()
 
-                                            synth.triggerAttackRelease( [ note_ref ],"2n")
+                                            synth.triggerAttackRelease( [ note_ref ],"8n")
                                         }
                                     }
                                     scale = pop.ap
@@ -251,7 +251,7 @@
                 //------------------------------------// Grid
                 //-----------------------------------------// 
                 side      = Math.floor(grid_cnt/2)
-                half_grid = (grid_size*side)
+                half_grid = (grid_size*side) + (grid_size*side*0.5)
 
                 for (var _x = -side; _x < side; _x++) {
                     // console.log(_x)
