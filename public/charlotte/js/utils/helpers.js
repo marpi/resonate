@@ -86,10 +86,10 @@ function getCubeMap(i) {
 
     var envMaps = [
         {file: "sunset.jpg", size: 512},
-        {file: "Above_The_Sea.jpg", size: 1024},
+        {file: "chalet.png", size: 1024},
         {file: "bluecloud.jpg", size: 1024},
         {file: "fog.jpg", size: 512},
-        {file: "frozen.jpg", size: 512},
+        {file: "charlot.jpg", size: 512},
         {file: "op.jpg", size: 1024},
         {file: "shinyblue.jpg", size: 1024},
         {file: "skyboxsun25degtest.jpg", size: 1024},
