@@ -45,7 +45,7 @@ function PIP_Animation (min = 0, max = 1){
     	}
 
     	if (this.active){
-    		this.ap = PIP_map(t,this.st,this.tt,this.max,this.min)
+    		this.ap = PIP_map(t,this.st,this.tt,this.min,this.max)
 
     		if (t > this.tt){this.active = false}
     	}

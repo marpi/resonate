@@ -79,7 +79,7 @@
             //------------------------------------------------------//
             var pulse_object  = new PIP_Animation();
             // var pulse_time    = "2n";
-            var loop_time     = "8n";
+            var loop_time     = "32n";
             var pulse_objects = []
             //------------------------------------------------------//
             //------------------------------------------------------//
@@ -130,9 +130,9 @@
                 var reverb = new Tone.JCReverb(0.01).connect(Tone.Master);
                 var delay  = new Tone.FeedbackDelay(0.1); 
                 //connecting the synth to reverb through delay
-                var synth  = new Tone.PolySynth(6, Tone.Synth).chain(delay, reverb);
+                // var synth  = new Tone.PolySynth(6, Tone.Synth).chain(delay, reverb);
                 // synth.triggerAttackRelease("A4","8n");
-                // var synth = new Tone.PolySynth(6, Tone.Synth).toMaster();
+                var synth = new Tone.PolySynth(6, Tone.Synth).toMaster();
 
 
                 loop = new Tone.Loop(function (time) {
@@ -141,14 +141,23 @@
                         "oscillator" : {
                             "envelope" : {
                                 attack : 0.0001,
-                                // decay  : 0,
-                                sustain: 0.001,
+                                // decay  : 0.0001,
+                                sustain: 0.0001,
                                 release: 0.99
                                 }
                             }
                         })
 
-
+                    al = 0.25
+                    // pop = pulse_objects[0]
+                    // if (!pop.active) {;
+                    //     pop.trigger = true
+                    //     pop.length  = al
+                    //     synth.triggerAttackRelease( [ "F4" ],"8n")
+                    // }
+                    // pop.update(clock.getElapsedTime())
+                    // scale = pop.ap
+                    // grid_geometry.children[0].scale.set(scale,scale,scale)
 
                     if (vr){
 
@@ -170,15 +179,29 @@
                                     
                                     if(controller1.position.clone().distanceTo(np) < trigger_dist){
 
-                                        note_ref = octave[ _x ] + _y.toString()
+                                        pop = pulse_objects[i]
 
-                                        synth.triggerAttackRelease( [ note_ref ],"2n")
+                                        if (!pop.active) {;
+                                            pop.trigger = true
+                                            pop.length  = al
+                                            synth.triggerAttackRelease( [ "F4" ],"8n")
+                      
+                                            note_ref = octave[ _x ] + _y.toString()
+
+                                            synth.triggerAttackRelease( [ note_ref ],"2n")
                                         }
-                                    };
+                                    }
+                                    grid_geometry.children[i].scale.set(scale,scale,scale)
                                     i++;
+                                    pulse_objects[i].update(clock.getElapsedTime())
                                 }
                             }
                         }
+                    }
+
+                    // ADD HANDLING IF NO VR
+
+
                     var note = Math.ceil(PIP_map(inc % 12,0,12,12,0))
                     var al   = PIP_map(time % 12,0.0,12.0,0.001,0.075)
 
