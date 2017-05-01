@@ -46,6 +46,7 @@
                 object;
             var clock         = new THREE.Clock();
             var grid_geometry = new THREE.Object3D();
+            var node_count    = 0;
             //------------------------------------------------------//
             //------------------------------------------------------//
 
@@ -76,9 +77,10 @@
 
             //------------------------------------------// PIP_Objects
             //------------------------------------------------------//
-            var pulse_object = new PIP_Animation();
-            var pulse_time   = "2n";
-
+            var pulse_object  = new PIP_Animation();
+            // var pulse_time    = "2n";
+            var loop_time     = "8n";
+            var pulse_objects = []
             //------------------------------------------------------//
             //------------------------------------------------------//
 
@@ -88,6 +90,7 @@
             var inc          = 0
             var grid_cnt     = 12
             var grid_size    = 0.25
+            var trigger_dist = 0.15
             //------------------------------------------------------//
             //------------------------------------------------------//
 
@@ -146,6 +149,30 @@
                         })
 
 
+                    if (vr){
+
+                        var i=0;
+                        for (var _x = 0; _x <= grid_cnt; _x++) {
+                            console.log(_x)
+                            for (var _y = 0; _y <= grid_cnt; _y++) {
+
+                                for (var _z = 0; _z <= 0; _z++) {
+                            
+                                    node = grid_geometry[i]
+
+                                    np   = node.position
+
+                                    if(controller1.position.clone().distanceTo(np) < trigger_dist){
+
+                                        note_ref = octave[ _x ] + y.toString()
+
+                                        synth.triggerAttackRelease( [ note_ref ],"2n")
+                                        }
+                                    };
+                                    i++;
+                                }
+                            }
+                    }
                     var note = Math.ceil(PIP_map(inc % 12,0,12,12,0))
                     var al   = PIP_map(time % 12,0.0,12.0,0.001,0.075)
 
@@ -165,12 +192,12 @@
                     note_ref = octave[Math.floor(inc%12) ]+ stroct
 
                     console.log("NOTE REF : " ,note_ref)
-                    synth.triggerAttackRelease( [note_ref ],"2n");
-                    pulse_object.trigger = true
-                    pulse_object.length  = al
+                    // synth.triggerAttackRelease( [note_ref ],"2n");
+                    // pulse_object.trigger = true
+                    // pulse_object.length  = al
 
                     inc +=1 
-                }, pulse_time);    
+                }, loop_time);    
                 loop.start(0);
                 Tone.Transport.start();
 
@@ -207,6 +234,9 @@
                             var mesh = new THREE.Mesh(geo, material)
                             mesh.position.set(_x*grid_size, (_y*grid_size)+half_grid, _z*grid_size)
                             grid_geometry.add(mesh)
+
+                            pulse_objects.push(new PIP_Animation())
+                            node_count ++;
                         }
                     }
                 }
