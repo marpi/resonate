@@ -176,10 +176,11 @@
                                     // console.log("Node count in loop : ", node_count)
                                     // console.log("i : ", i)
                                     // console.log("Node position : ", np)
+                                    pop = pulse_objects[i]
                                     
                                     if(controller1.position.clone().distanceTo(np) < trigger_dist){
 
-                                        pop = pulse_objects[i]
+                                        
 
                                         if (!pop.active) {;
                                             pop.trigger = true
@@ -191,6 +192,7 @@
                                             synth.triggerAttackRelease( [ note_ref ],"2n")
                                         }
                                     }
+                                    scale = pop.ap
                                     grid_geometry.children[i].scale.set(scale,scale,scale)
                                     i++;
                                     pulse_objects[i].update(clock.getElapsedTime())
