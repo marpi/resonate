@@ -178,14 +178,12 @@
                                     // console.log("Node position : ", np)
                                     pop = pulse_objects[i]
                                     
-                                    if(controller1.position.clone().distanceTo(np) < trigger_dist){
-
-                                        
+                                    if(controller1.position.clone().distanceTo(np) < trigger_dist || controller2.position.clone().distanceTo(np) < trigger_dist){
 
                                         if (!pop.active) {;
                                             pop.trigger = true
                                             pop.length  = al
-                                            synth.triggerAttackRelease( [ "F4" ],"8n")
+                                            // synth.triggerAttackRelease( [ "F4" ],"8n")
                       
                                             note_ref = octave[ _x ] + _y.toString()
 
