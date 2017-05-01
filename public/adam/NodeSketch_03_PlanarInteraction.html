@@ -165,7 +165,7 @@
 
                                     if(controller1.position.clone().distanceTo(np) < trigger_dist){
 
-                                        note_ref = octave[ _x ] + y.toString()
+                                        note_ref = octave[ _x ] + _y.toString()
 
                                         synth.triggerAttackRelease( [ note_ref ],"2n")
                                         }
