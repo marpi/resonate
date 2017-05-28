@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Resonate Workshop</title>
+        <meta charset="utf-8">
+        <meta property="og:title" content="Resonate Workshop"/>
+        <meta property="og:type" content="website"/>
+        <meta property="og:image" content=""/>
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+        <!-- Origin Trial Token, feature = WebVR, origin = https://marpi.pl, expires = 2017-05-19 -->
+        <meta http-equiv="origin-trial" data-feature="WebVR" data-expires="2017-05-19" content="AutAQvhPMXcJN2dfVzKebCb5nTzFtjcfJnUz4tqiNbly0tBNptQccZVEOatEEOK+O483IwJMdTjLqJzE1CINIQkAAABaeyJvcmlnaW4iOiJodHRwczovL21hcnBpLnBsOjQ0MyIsImZlYXR1cmUiOiJXZWJWUiIsImV4cGlyeSI6MTQ5NTIwMzE3NywiaXNTdWJkb21haW4iOnRydWV9">
+
+        <style>
+            body {
+                margin: 0px;
+                overflow: hidden;
+                background-color: #000000;
+            }
+        </style>
+    </head>
+    <body>
+
+        <button id = "playButton"> UnlockAudio </button>
+
+        <script src="js/third-party/threejs/three.js"></script>
+        <script src="js/third-party/threejs/vr/ViveController.js"></script>
+        <script src="js/third-party/threejs/vr/WebVR.js"></script>
+
+        <script src="js/third-party/threejs/loaders/OBJLoader.js"></script>
+        <script src="js/third-party/threejs/effects/VREffect.js"></script>
+        <script src="js/third-party/threejs/effects/StereoEffect.js"></script>
+
+        <script src="js/third-party/threejs/controls/VRControls.js"></script>
+        <script src="js/third-party/threejs/controls/DeviceOrientationControls.js"></script>
+        <script src="js/third-party/threejs/controls/OrbitControls.js"></script>
+
+        <script src="js/third-party/TweenMax.min.js"></script>
+        <script src="js/third-party/Odeo.js"></script>
+        <script src="js/third-party/Tone.min.js"></script>
+
+        <script src="js/third-party/perlin.js"></script>        
+
+        <script src="js/utils/helpers.js"></script>
+        <script src="js/third-party/StartAudioContext.js"></script>
+
+        <script>
+
+            //-----------------------------------|| THREE objects
+            var camera, scene, renderer, effect, controls, vrControls;
+            var box_mesh;       
+            var clock;
+            //----------------------------------------------|| 
+            StartAudioContext (Tone.context, "#playButton")
+            
+
+            //-----------------------------------|| VR
+            var controller1, controller2;
+            //----------------------------------------------|| 
+            
+            var mobile = false;
+            var vr     = false;
+            var object,group;
+
+            
+            var rings;
+            var p_grid,p_group;
+
+            var dist = 0.3
+
+
+            //--------------//Tone stuff
+            var synth;
+            var loop;
+            var scale = ['C3', 'D3', 'Eb3', 'F3', 'G3', 'A3', 'Bb3', 'C4', 'D4', 'Eb4', 'F4', 
+                'G4', 'A4', 'Bb4', 'C5', 'D5'];
+            //------------------------//
+
+            init();
+            setup();
+            render();
+
+            var effector;
+
+            var particles;
+            //----------------||Class for particles
+            function Vtx (p,t,s){
+                this.p = p;
+                this.t = t;
+
+                this.v = new THREE.Vector3(0,0,0);
+                this.a = new THREE.Vector3(0,0,0);
+
+                this.decay = 0.6;
+                this.sd    = 0.97;
+
+
+                this.s = s;
+                this.d = 0.0;
+
+                this.update = function() {
+                    //this.a  = (this.t-this.p) * 0.1;
+                    // this.a = this.t.sub( this.p );
+                    var c = new THREE.Vector3();
+                    c.subVectors( this.t ,this.p);
+                    c.multiplyScalar(0.05);
+                    this.a = c;
+
+                    this.v.add(this.a);
+                    this.p.add(this.v);
+                    this.v.multiplyScalar(this.decay);
+
+                    // this.s = ((this.s-this.d) * this.decay) + this.d;
+                    this.s *=   this.sd;
+                    };
+            };
+            //------------------------------------||
+
+            var vtx;
+
+            function init() {
+
+                // Tone stuff
+                synth = new Tone.PolySynth(6, Tone.Synth, {
+                    "oscillator" : {
+                        "partials" : [0, 2, 3, 4],
+                    }
+                }).toMaster();
+
+                // loop = new Tone.Sequence(function (time, col) {
+
+                //     box_mesh.position.set(0, 0,(col-8)/3)
+
+                //     var row = 0;
+                //     for (var i = col * 16; i < (col * 16) + 16; i++) {
+                //         if (particles[i].s > 1) { 
+                //             // console.log("BHJEKBHLSA")                   
+                //             synth.triggerAttackRelease(scale[row], '8n', time);
+                //         }
+                //         row++;
+                //     };
+
+                loop = new Tone.Sequence(function (time) {
+
+                    // box_mesh.position.set(0, 0,(col-8)/3)
+                    var cnt = particles.length;
+                    var row = 0;
+                    for (var i = 0; i < cnt; i++) {
+                        if (particles[i].s > 50) { 
+                            // console.log("BHJEKBHLSA")                   
+                            synth.triggerAttackRelease(scale[i%16], '8n', time);
+                        }
+                        row++;
+                    };
+
+                }, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], '16n');
+                loop.start();
+                Tone.Transport.start();
+
+                // renderer
+
+                renderer = new THREE.WebGLRenderer({antialias: true});
+                renderer.setPixelRatio(window.devicePixelRatio);
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                document.body.appendChild(renderer.domElement);
+
+                // scene
+
+                scene = new THREE.Scene();
+
+                // camera
+
+                camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
+                camera.position.set(0, 0, 3);
+
+                // controls
+
+                controls = new THREE.OrbitControls(camera);
+                controls.autoRotate = true;
+
+                // events
+
+                addEvents();
+
+                clock = new THREE.Clock(true);
+
+                var loader = new THREE.OBJLoader();
+                // loader.setPath("/assets");
+
+                loader.load(
+                    // resource URL
+                    "assets/models/Rings_01.obj",
+
+                    // pass the loaded data to the onLoad function.
+                    //Here it is assumed to be an object
+                    function ( obj ) {
+                        //add the loaded object to the scene
+                        obj.scale.x = 0.0001
+                        obj.scale.y = 0.0001
+                        obj.scale.z = 0.0001
+                        obj.position.y = 30;// = new THREE.Vector3(0,100,0);
+                        obj.rotation.x = 1.5;
+
+                        scene.add( obj );
+                    },
+
+                    // Function called when download progresses
+                    function ( xhr ) {
+                        console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+                    },
+
+                    // Function called when download errors
+                    function ( xhr ) {
+                        console.error( 'An error happened' );
+                    }
+                );
+            }
+
+
+
+            function setup() {
+
+                // central object
+
+                var geometry = new THREE.TorusKnotGeometry(0.64, 0.25, 120, 6);
+                var tet      = new THREE.TetrahedronGeometry(0.5, 0);
+                var material = new THREE.MeshPhongMaterial({shading: THREE.FlatShading, side: THREE.DoubleSide});
+                
+                var wire_mat =  new THREE.MeshPhongMaterial({shading: THREE.FlatShading, side: THREE.DoubleSide});
+                wire_mat.wireframe = true;
+                object = new THREE.Mesh(tet, material);
+                scene.add(object);
+
+
+                var tet2 = new THREE.TetrahedronGeometry(0.5,3);
+                effector = new THREE.Mesh(tet2, material);
+                scene.add(effector);
+
+                // cubes 
+
+                group = new THREE.Object3D();
+
+                p_group = new THREE.Object3D();
+
+                var side = 8  
+                var size = 0.5/side;
+                size = 0.01
+                particles = [];
+                for (var _x = -side; _x <= side; _x++) {
+                    for (var _y = -side; _y <= side; _y++) {
+                    // for (var _y = 0; _y <= 0; _y++) {
+                        for (var _z = -side; _z <= side; _z++) {
+                            // var geo = new THREE.BoxGeometry(.1, .1, .1, 1, 1, 1)
+                            // var geo = new THREE.BoxGeometry(size,size,size, 1, 1, 1)
+                            var geo = new THREE.TetrahedronGeometry(0.01,1);
+                            var mesh = new THREE.Mesh(geo, material)
+                            mesh.position.set(_x, _y, _z)
+                            p_group.add(mesh);
+                            var t = new THREE.Vector3(_x/3,_y/3,_z/3);
+                            var p = new THREE.Vector3(0,100,0);
+                            p.add(t);
+                            particles.push(new Vtx(p,t,1.0));
+                            
+                        }
+                    }
+                }
+
+                var box_marker = new THREE.BoxGeometry(8,1,1, 1, 1, 1)
+                box_mesh   = new THREE.Mesh(box_marker, wire_mat)
+                
+
+                // scene.add(box_mesh)
+                scene.add(p_group);
+
+                // light
+
+                var light = new THREE.DirectionalLight(0xff0070);
+                light.position.set(-1, 1.5, 0.5);
+                scene.add(light);
+
+                var light1 = new THREE.DirectionalLight(0xffff70);
+                light1.position.set(1, 2.5, 0.5);
+                scene.add(light1);
+
+
+                var light2 = new THREE.DirectionalLight(0x60fff0);
+                light2.position.set(1, -2, 0.5);
+                scene.add(light2);
+            }
+
+            function render() {
+                
+                // vr
+                var t = clock.getElapsedTime()*2.5;
+                var cnt = p_group.children.length;
+                
+                var yv = noise.simplex3(t/5.0, 0, 0);
+                // console.log(yv)
+
+                effector.position.set(Math.sin(t) * 2.5,yv*3,Math.cos(t)*2.5);
+                var ep = new THREE.Vector3();
+
+                ep = effector.position;
+
+                var step;
+                for (var i = 0; i < cnt; i++) {
+                    var node = p_group.children[i];
+                    // node.rotation.y += 0.1;
+                    var p = node.position;
+                    var x = p.x;
+                    var y = p.y;
+                    var z = p.z; 
+                    var s = noise.simplex3(x+t/5, y/5, z/5);
+
+                    if(vr){
+                        if( controller1.position.clone().multiplyScalar(10).distanceTo( particles[i].p ) < dist){
+                            particles[i].s = 200.0;
+                        }
+                    }
+                    else{
+
+                        if( ep.distanceTo( particles[i].p ) < dist){
+                            particles[i].s = 200.0;
+                        }
+                    }
+
+                    particles[i].update();
+
+                    var np = particles[i].p;
+                    node.position.set(np.x,np.y,np.z);
+
+                    node.scale.x =  1.0 + (particles[i].s)*0.1;
+                    node.scale.y =  1.0 + (particles[i].s)*0.1;
+                    node.scale.z =  1.0 + (particles[i].s)*0.1;
+
+
+                    if(vr){
+                        if( controller1.position.clone().multiplyScalar(10).distanceTo( np ) < dist){
+                            // synth.triggerAttackRelease('C4', '8n')
+                            particles[i].p = np.add(new THREE.Vector3(0,1,0)); 
+                        } 
+                    }
+                    else{
+                        if( ep.distanceTo( np ) < dist){
+                            // synth.triggerAttackRelease('C4', '8n')
+                            particles[i].p = np.add(new THREE.Vector3(0,1,0));
+                        }
+                    }
+                }
+
+
+                if (vr) {
+                    vrControls.update();
+                    controller1.update();
+                    controller2.update();
+                    effect.requestAnimationFrame(render);
+                    effect.render(scene, camera);
+                    return;
+                }
+                
+                // everything else
+                
+                requestAnimationFrame(render);
+
+                controls.update();
+                if (mobile) {
+                    camera.position.set(0, 0, 0)
+                    camera.translateZ(5);
+                }
+                renderer.render(scene, camera);
+
+            }
+
+        </script>
+    </body>
+</html>
