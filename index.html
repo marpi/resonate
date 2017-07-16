@@ -82,7 +82,6 @@
                 renderer = new THREE.WebGLRenderer({antialias: true});
                 renderer.setPixelRatio(window.devicePixelRatio);
                 renderer.setSize(window.innerWidth, window.innerHeight);
-                renderer.shadowMap.enabled = true;
                 document.body.appendChild(renderer.domElement);
 
                 // scene
@@ -121,17 +120,12 @@
                 
                 // objects
                 
-                var material = new THREE.MeshPhongMaterial({});
-                var group = new THREE.Object3D();
-                var side = 100;
-                var d = .2;
-                var r = 3;
-                for (var i = 0; i < side; i++) {
-                    var geo = new THREE.TorusGeometry(.1 + i * d, .1, 10, 3)
+                var material = new THREE.MeshPhongMaterial();
+                for (var i = 0; i < 100; i++) {
+                    var geo = new THREE.TorusGeometry(.1 + i * .2, .1, 10, 3)
                     var mesh = new THREE.Mesh(geo, material);
                     mesh.rotation.set(Math.PI / 2, 0, 0);
 
-                    group.add(mesh);
                     scene.add(mesh);
 
                     allObjects.push(mesh);
