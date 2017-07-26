@@ -16,7 +16,7 @@
         <meta property="og:site_name"    content="Resonate Workshop">
         <meta property="og:type"         content="website">
         <meta name="twitter:card"        content="summary_large_image">
-        <meta name="twitter:url"         content="https://classes.marpi.pl/resonate//">
+        <meta name="twitter:url"         content="https://classes.marpi.pl/resonate/">
         <meta name="twitter:title"       content="Resonate Workshop">
         <meta property="og:image"        content="https://classes.marpi.pl/resonate/og_image.jpg">
         <meta name="twitter:image"       content="https://classes.marpi.pl/resonate/og_image.jpg">
@@ -49,10 +49,10 @@
         <script src="js/third-party/threejs/controls/OrbitControls.js"></script>
 
         <script src="js/third-party/TweenMax.min.js"></script>
-        <script src="js/third-party/Odeo.js"></script>
         <script src="js/third-party/perlin.js"></script>
 
         <script src="js/utils/helpers.js"></script>
+        <script src="js/utils/AudioReactive.js"></script>
 
         <script>
 
@@ -73,9 +73,9 @@
 
                 // audio
 
-                odeo = new Odeo({});
-                odeo.stopUsingMicrophone();
-                odeo.playMedia('assets/sound/sept')
+                audio = new AudioReactive({});
+                audio.stopUsingMicrophone();
+                audio.playMedia('assets/sound/sept')
 
                 // renderer
 
@@ -164,7 +164,7 @@
                 
                 // audio
                 
-                odeo.update();
+                audio.update();
                 
                 // lights
                 
@@ -181,7 +181,7 @@
                 
                 for (var i = 0; i < allObjects.length; i++) {
                     var m = allObjects[i]
-                    var s = .1 + 3 * odeo.frequencyData[i] / 255
+                    var s = .1 + 3 * audio.frequencies[i] / 255
                     m.scale.set(1, 1, 1 * s)
                 }
 
