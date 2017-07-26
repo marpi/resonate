@@ -56,10 +56,6 @@
 
             function init() {
 
-                /*odeo = new Odeo({});
-                 odeo.stopUsingMicrophone();
-                 odeo.playMedia('assets/sound/sept.ogg')*/
-
                 // renderer
 
                 renderer = new THREE.WebGLRenderer({antialias: true});
@@ -215,24 +211,7 @@
 
             function render() {
 
-                //odeo.update();
-                //console.log(odeo.frequencyData)
-
-                /*for (var i = 0; i < allObjects.length; i++) {
-                 var m = allObjects[i]
-                 var s = 3 * odeo.frequencyData[i] / 255
-                 m.scale.set(s, s, s)
-                 }*/
-
-
-                /*for (var i=0;i<object.geometry.vertices.length;i++){
-                 var v=object.geometry.vertices[i]
-                 var f=odeo.frequencyData[i%128]/256
-                 v.copy(og.vertices[i])
-                 v.z+=f
-                 //v.multiplyScalar(1+f)
-                 }
-                 object.geometry.verticesNeedUpdate=true;*/
+                
                 var time = Date.now() * 0.00001;
 
                 for (var i = 0; i < lights.length; i++) {

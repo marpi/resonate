@@ -64,10 +64,8 @@
 
                 // sound
 
-                odeo = new Odeo({});
-                odeo.stopUsingMicrophone();
-
-                odeo.playMedia('assets/sound/They All Fail.mp3');
+                audio = new AudioReactive({});
+                audio.playMedia('assets/sound/They All Fail.mp3');
 
                 // start render
 
@@ -176,12 +174,12 @@
             }
 
             function render() {
-                if (odeo) {
-                    odeo.update();
+                if (audio) {
+                    audio.update();
 
                     for (var i = 0; i < allObjects.length; i++) {
                         var m = allObjects[i];
-                        var s = 3 * odeo.frequencyData[10] / 255;
+                        var s = 3 * audio.frequencies[10] / 255;
                         m.scale.set(1, s+0.1, 1);
                     }
                 }

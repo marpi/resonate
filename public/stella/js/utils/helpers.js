@@ -196,16 +196,3 @@ function getCubeMap(i) {
 
 
 //var s = noise.simplex3(_x, _y, _z);
-
-/*
- *
-
-    odeo = new Odeo({});
-    odeo.stopUsingMicrophone();
-    odeo.playMedia('assets/sound/jewel.ogg')
-
-    odeo.update();
-    console.log(odeo.frequencyData)
-
- *
- */

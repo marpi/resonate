@@ -52,10 +52,9 @@
   render();
 
   function init() {
-    // odeo sound
-    odeo = new Odeo({});
-    odeo.stopUsingMicrophone();
-    odeo.playMedia('assets/sound/jewel.ogg');
+    // sound
+    audio = new AudioReactive({});
+    audio.playMedia('assets/sound/jewel.ogg');
 
     // renderer
     renderer = new THREE.WebGLRenderer({antialias: true});
@@ -189,12 +188,11 @@
 
   function render() {
 
-    odeo.update();
-    //console.log(odeo.frequencyData)
-
+    audio.update();
+    
     for (var i = 0; i < allObjects.length; i++) {
       var m = allObjects[i];
-      var s = 3 * odeo.frequencyData[i] / 255;
+      var s = 3 * audio.frequencies[i] / 255;
       m.scale.set(s/2, s/2, s/2);
       m.rotation.set(s,s,s)
     }

@@ -47,10 +47,10 @@
             setup();
             render();
             function init() {
-                odeo = new Odeo({});
-                 odeo.stopUsingMicrophone();
-                 odeo.playMedia('assets/sound/rire.wav')
-                //   odeo.playMedia('assets/sound/rire.ogg')
+
+                audio = new AudioReactive({});
+                audio.playMedia('assets/sound/rire.wav')
+                //   audio.playMedia('assets/sound/rire.ogg')
                 // renderer
                 renderer = new THREE.WebGLRenderer({antialias: true});
                 renderer.setPixelRatio(window.devicePixelRatio);
@@ -151,19 +151,12 @@
                 scene.add(light);
             }
             function render() {
-                odeo.update();
-                //console.log(odeo.frequencyData)
-                /*for (var i = 0; i < allObjects.length; i++) {
-                 var m = allObjects[i]
-                 var s = 3 * odeo.frequencyData[i] / 255
-                 m.scale.set(s, s, s)
-                 }*/
+                audio.update();
         
                 if(object){
                     for (var i=0;i<object.geometry.vertices.length;i++){
                         var v=object.geometry.vertices[i]
-                        var f=odeo.frequencyData[i%120]/504
-                        //var f=odeo.frequencyData[i%128]/256
+                        var f=audio.frequencies[i%120]/504
                         v.copy(og.vertices[i])
                         v.y+=f
                         v.x+=f/10
