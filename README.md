@@ -17,7 +17,7 @@
 How to run
 -------
 
-In order to see your [Three.js](http://threejs.org) project on your own computer you have to run on "localhost":
+In order to see your [Three.js](http://threejs.org) project on your own computer you have to run "localhost":
 
 - Windows: You can use [WAMP](http://www.wampserver.com/en/), or any simple local server
 - OSX: In terminal, go to your public/name/ folder and type: php -S 0.0.0.0:8000
