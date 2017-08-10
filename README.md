@@ -24,6 +24,11 @@ In order to see your [Three.js](http://threejs.org) project on your own computer
 - Linux: In terminal, go to your public/name/ folder and type: python -m SimpleHTTPServer
 - Otherwise, you can try running Chrome with the flags --disable-web-security
 
+Libraries
+-------
+
+[three.js](https://github.com/mrdoob/three.js/), [TweenMax.js](https://greensock.com/tweenmax), [isMobile](https://github.com/kaimallea/isMobile)
+
 Setup
 -------
 
